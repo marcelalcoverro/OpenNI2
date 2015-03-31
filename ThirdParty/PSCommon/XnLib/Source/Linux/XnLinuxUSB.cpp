@@ -32,8 +32,8 @@
 #include "XnLinuxUSB.h"
 #include "../XnUSBInternal.h"
 #include <XnOS.h>
-#include <XnLog.h>
 #include <XnOSCpp.h>
+#include <XnLog.h>
 #include <XnList.h>
 
 #if (XN_PLATFORM == XN_PLATFORM_LINUX_X86 || XN_PLATFORM == XN_PLATFORM_LINUX_ARM)
@@ -1090,6 +1090,8 @@ XN_C_API XnStatus xnUSBSendControl(XN_USB_DEV_HANDLE pDevHandle, XnUSBControlTyp
 	
 	// send	
 	int nBytesSent = libusb_control_transfer(pDevHandle->hDevice, bmRequestType, nRequest, nValue, nIndex, pBuffer, nBufferSize, nTimeOut);
+
+	xnLogInfo(XN_MASK_USB, "libusb_control_transfer ==> timeout: %d, returned (bytes): %d", nTimeOut, nBytesSent);
 	
 	// check everything went OK
 	if (nBytesSent == LIBUSB_ERROR_TIMEOUT)
@@ -1103,6 +1105,7 @@ XN_C_API XnStatus xnUSBSendControl(XN_USB_DEV_HANDLE pDevHandle, XnUSBControlTyp
 	
 	if ((XnUInt32)nBytesSent != nBufferSize)
 	{
+		xnLogWarning(XN_MASK_USB, "libusb_control_transfer XN_STATUS_USB_GOT_UNEXPECTED_BYTES ==> %d - %d", nBytesSent, nBufferSize);
 		return (XN_STATUS_USB_GOT_UNEXPECTED_BYTES);
 	}
 

@@ -70,9 +70,17 @@ typedef struct XnShiftToDepthTables
 //---------------------------------------------------------------------------
 // Functions Declaration
 //---------------------------------------------------------------------------
-XnStatus XnShiftToDepthInit(XnShiftToDepthTables* pShiftToDepth, const XnShiftToDepthConfig* pConfig);
-XnStatus XnShiftToDepthUpdate(XnShiftToDepthTables* pShiftToDepth, const XnShiftToDepthConfig* pConfig);
-XnStatus XnShiftToDepthConvert(XnShiftToDepthTables* pShiftToDepth, XnUInt16* pInput, XnUInt32 nInputSize, OniDepthPixel* pOutput);
-XnStatus XnShiftToDepthFree(XnShiftToDepthTables* pShiftToDepth);
+XnStatus XnShiftToDepthInit_PS1080(XnShiftToDepthTables* pShiftToDepth, const XnShiftToDepthConfig* pConfig);
+XnStatus XnShiftToDepthUpdate_PS1080(XnShiftToDepthTables* pShiftToDepth, const XnShiftToDepthConfig* pConfig);
+XnStatus XnShiftToDepthConvert_PS1080(XnShiftToDepthTables* pShiftToDepth, XnUInt16* pInput, XnUInt32 nInputSize, OniDepthPixel* pOutput);
+XnStatus XnShiftToDepthFree_PS1080(XnShiftToDepthTables* pShiftToDepth);
+
+# if !defined(OPENNI_DRIVER_IS_SELECTED)
+#  define OPENNI_DRIVER_IS_SELECTED "PS1080"
+#  define XnShiftToDepthInit XnShiftToDepthInit_PS1080
+#  define XnShiftToDepthUpdate XnShiftToDepthUpdate_PS1080
+#  define XnShiftToDepthConvert XnShiftToDepthConvert_PS1080
+#  define XnShiftToDepthFree XnShiftToDepthFree_PS1080
+# endif // !defined(OPENNI_DRIVER_IS_SELECTED)
 
 #endif //_XN_SHIFT_TO_DEPTH_H_

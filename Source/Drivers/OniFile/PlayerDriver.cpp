@@ -142,4 +142,4 @@ void XN_CALLBACK_TYPE PlayerDriver::EOFReached(void* pCookie, const char *strUri
 
 } // namespace oni_file
 
-ONI_EXPORT_DRIVER(oni_file::PlayerDriver)
+ONI_EXPORT_DRIVER(oni_file::PlayerDriver, PlayerDriver)
