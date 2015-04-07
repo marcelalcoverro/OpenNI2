@@ -21,9 +21,9 @@
 #include "OniDriverHandler.h"
 #include "OniDriverHeaders.h"
 #include "XnLib.h"
+#include <dlfcn.h>
 #include <XnLog.h>
 
-#include <dlfcn.h>
 #define __GNU_SOURCE
 
 #define OniGetProcAddress(function)																\
@@ -42,7 +42,6 @@ ONI_NAMESPACE_IMPLEMENTATION_BEGIN
 DriverHandler::DriverHandler(const char* library, xnl::ErrorLogger& errorLogger)
 {
 	m_valid = false;
-
 	xnLogInfo("DriverHandler", "LibraryHandler: Loading library %s", library);
 	xnOSMemSet(&funcs, 0, sizeof(funcs));
 
@@ -53,6 +52,8 @@ DriverHandler::DriverHandler(const char* library, xnl::ErrorLogger& errorLogger)
 	}
 
 	if (isStatic) {
+
+    xnLogInfo("DriverHandler", "Detected Static library build for lib %s.", library);
 
 		m_libHandle = NULL;
 

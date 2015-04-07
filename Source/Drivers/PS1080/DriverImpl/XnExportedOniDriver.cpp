@@ -21,6 +21,9 @@
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
+#ifndef __PS1080_DRIV_EXPORT
+#define __PS1080_DRIV_EXPORT
+
 #include "XnOniDriver.h"
 
 //---------------------------------------------------------------------------
@@ -30,3 +33,5 @@ ONI_EXPORT_DRIVER(XnOniDriver, XnOniDriver);
 
 // The following line is needed to be once in *ALL* of the high level shared library modules. DO NOT REMOVE!!! 
 XN_API_EXPORT_INIT()
+
+#endif // __PS1080_DRIV_EXPORT

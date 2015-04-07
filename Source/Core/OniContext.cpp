@@ -100,7 +100,7 @@ OniStatus Context::initialize()
 	xnLogSetMaskMinSeverity(XN_LOG_MASK_ALL, (XnLogSeverity)0);
 	xnLogSetAndroidOutput(TRUE);
 #endif
-	
+
 	if (configurationFileExists)
 	{
 		// First, we should process the log related configuration as early as possible.
@@ -108,7 +108,7 @@ OniStatus Context::initialize()
 		XnInt32 nValue;
 		XnChar strLogPath[XN_FILE_MAX_PATH] = {0};
 
-		//Test if log redirection is needed 
+		//Test if log redirection is needed
 		rc = xnOSReadStringFromINI(strOniConfigurationFile, "Log", "LogPath", strLogPath, XN_FILE_MAX_PATH);
 		if (rc == XN_STATUS_OK)
 		{
@@ -134,7 +134,7 @@ OniStatus Context::initialize()
 		{
 			xnLogSetConsoleOutput(nValue == 1);
 		}
-		
+
 		rc = xnOSReadIntFromINI(strOniConfigurationFile, "Log", "LogToFile", &nValue);
 		if (rc == XN_STATUS_OK)
 		{
@@ -200,6 +200,7 @@ OniStatus Context::initialize()
 
 XnStatus Context::loadLibrariesStatic()
 {
+  xnLogInfo(XN_MASK_ONI_CONTEXT, "loadLibrariesStatic function called");
 	// Get a file list of Xiron devices
 	XnInt32 nFileCount = 0;
 	typedef XnChar FileName[XN_FILE_MAX_PATH];
@@ -217,7 +218,7 @@ XnStatus Context::loadLibrariesStatic()
 		DeviceDriver* pDeviceDriver = XN_NEW(DeviceDriver, acsFileList[i], m_frameManager, m_errorLogger);
 		if (pDeviceDriver == NULL || !pDeviceDriver->isValid())
 		{
-			xnLogVerbose(XN_MASK_ONI_CONTEXT, "Couldn't use file '%s' as a device driver", acsFileList[i]);
+			xnLogVerbose(XN_MASK_ONI_CONTEXT, "Couldn't understand file '%s' as a device driver", acsFileList[i]);
 			m_errorLogger.Append("Couldn't understand file '%s' as a device driver", acsFileList[i]);
 			XN_DELETE(pDeviceDriver);
 			continue;
@@ -228,7 +229,7 @@ XnStatus Context::loadLibrariesStatic()
 		pDeviceDriver->registerDeviceStateChangedCallback(deviceDriver_DeviceStateChanged, this, dummy);
 		if (!pDeviceDriver->initialize())
 		{
-			xnLogVerbose(XN_MASK_ONI_CONTEXT, "Couldn't use file '%s' as a device driver", acsFileList[i]);
+			xnLogVerbose(XN_MASK_ONI_CONTEXT, "Couldn't initialize file '%s' as a device driver", acsFileList[i]);
 			m_errorLogger.Append("Couldn't initialize device driver from file '%s'", acsFileList[i]);
 			XN_DELETE(pDeviceDriver);
 			continue;
@@ -246,6 +247,7 @@ XnStatus Context::loadLibrariesStatic()
 
 XnStatus Context::loadLibraries(const char* directoryName)
 {
+  xnLogInfo(XN_MASK_ONI_CONTEXT, "loadLibraries function called");
 	XnStatus nRetVal;
 
 	// Get a file list of Xiron devices
@@ -348,12 +350,12 @@ void Context::shutdown()
 
 	m_cs.Lock();
 
-		// Close all recorders.
-		while (m_recorders.Begin() != m_recorders.End())
-		{
-				Recorder* pRecorder = *m_recorders.Begin();
-				recorderClose(pRecorder);
-		}
+  // Close all recorders.
+  while (m_recorders.Begin() != m_recorders.End())
+  {
+    Recorder* pRecorder = *m_recorders.Begin();
+    recorderClose(pRecorder);
+  }
 
 	// Destroy all streams
 	while (m_streams.Begin() != m_streams.End())
@@ -795,7 +797,7 @@ OniStatus Context::waitForStreams(OniStreamHandle* pStreams, int streamCount, in
 				timeToWait = 0;
 		}
 	} while (XN_STATUS_OK == xnOSWaitEvent(hEvent, timeToWait));
-	
+
 	xnOSStopTimer(&workTimer);
 
 	if (oldestIndex != -1)
@@ -824,7 +826,7 @@ OniStatus Context::enableFrameSync(OniStreamHandle* pStreams, int numStreams, On
 	// Check validity and fill the arrays.
 	for (int i = 0; i < numStreams; ++i)
 	{
-		// Make sure stream's device is valid and is same as device of other streams. 
+		// Make sure stream's device is valid and is same as device of other streams.
 		if (pDeviceDriver == NULL)
 		{
 			pDeviceDriver = pStreams[i]->pStream->getDevice().getDeviceDriver();
@@ -863,7 +865,7 @@ OniStatus Context::enableFrameSyncEx(VideoStream** pStreams, int numStreams, Dev
 	}
 
 	// Create the new frame sync group (it will link all the streams).
-	SyncedStreamsFrameHolder* pSyncedStreamsFrameHolder = XN_NEW(SyncedStreamsFrameHolder, 
+	SyncedStreamsFrameHolder* pSyncedStreamsFrameHolder = XN_NEW(SyncedStreamsFrameHolder,
 																	m_frameManager, pStreams, numStreams);
 	XN_VALIDATE_PTR(pSyncedStreamsFrameHolder, ONI_STATUS_ERROR);
 
@@ -995,7 +997,7 @@ OniStatus Context::recorderOpen(const char* fileName, OniRecorderHandle* pRecord
 		// Try to initialize the recorder, and add it to the list of known
 		// recorders upon successful initialization.
 		OniStatus status = (*pRecorder)->pRecorder->initialize(fileName);
-		if (ONI_STATUS_OK == status) 
+		if (ONI_STATUS_OK == status)
 		{
 				m_recorders.AddLast((*pRecorder)->pRecorder);
 		}
@@ -1017,7 +1019,7 @@ OniStatus Context::recorderClose(OniRecorderHandle* pRecorder)
 		//  The way handles are related to Recorder instance can be depicted by such
 		//  a diagram:
 		//
-		//  +----------------------------+ points to 
+		//  +----------------------------+ points to
 		//  | OniRecorderHandle handle_1 |-----------------+
 		//  +----------------------------+                 |
 		//  +----------------------------+ points to +-----v------------------+
@@ -1101,7 +1103,7 @@ XN_EVENT_HANDLE Context::getThreadEvent()
 	xnOSGetCurrentThreadID(&tid);
 
 	m_cs.Lock();
-	
+
 	if (XN_STATUS_OK != m_waitingThreads.Get(tid, hEvent))
 	{
 		xnOSCreateEvent(&hEvent, FALSE);

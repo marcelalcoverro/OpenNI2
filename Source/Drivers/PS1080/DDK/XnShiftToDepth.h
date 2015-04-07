@@ -81,6 +81,8 @@ XnStatus XnShiftToDepthFree_PS1080(XnShiftToDepthTables* pShiftToDepth);
 #  define XnShiftToDepthUpdate XnShiftToDepthUpdate_PS1080
 #  define XnShiftToDepthConvert XnShiftToDepthConvert_PS1080
 #  define XnShiftToDepthFree XnShiftToDepthFree_PS1080
+#else
+#  warning OPENNI_DRIVER_IS_SELECTED_ONCE_LOGIC_IS_BROKEN
 # endif // !defined(OPENNI_DRIVER_IS_SELECTED)
 
 #endif //_XN_SHIFT_TO_DEPTH_H_
