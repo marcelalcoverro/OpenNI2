@@ -59,7 +59,7 @@ void XnLogAndroidWriter::WriteEntry(const XnLogEntry* pEntry)
 	ALOGE("OpenNI2: %s\n", pEntry->strMessage);
 #else
 	//__android_log_print(OpenNISeverityToAndroid(pEntry->nSeverity), "OpenNI", "%s\n", pEntry->strMessage);
-	__android_log_print(OpenNISeverityToAndroid(pEntry->nSeverity), "OpenNI", "%9llu %-10s %s\n", pEntry->nTimestamp, pEntry->strSeverity, pEntry->strMessage);
+	__android_log_print(OpenNISeverityToAndroid(pEntry->nSeverity), "lynx.openni", "%9llu %-10s %s\n", pEntry->nTimestamp, pEntry->strSeverity, pEntry->strMessage); 
 #endif
 }
 
