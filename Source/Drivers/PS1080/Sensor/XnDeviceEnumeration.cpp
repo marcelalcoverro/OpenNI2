@@ -20,6 +20,7 @@
 *****************************************************************************/
 #include "XnDeviceEnumeration.h"
 #include <XnUSB.h>
+#include <XnLog.h>
 
 //---------------------------------------------------------------------------
 // Globals
@@ -52,7 +53,7 @@ XnStatus XnDeviceEnumeration::Initialize()
 	{
 		return XN_STATUS_OK;
 	}
-
+	xnLogVerbose(XN_LOG_MASK_ALL, "XnDeviceEnumeration Initializing USB...");
 	nRetVal = xnUSBInit();
 	XN_IS_STATUS_OK(nRetVal);
 
@@ -62,13 +63,19 @@ XnStatus XnDeviceEnumeration::Initialize()
 	const XnUSBConnectionString* astrDevicePaths;
 	XnUInt32 nCount;
 
+	xnLogVerbose(XN_LOG_MASK_ALL, "XnDeviceEnumeration check all products ...");
+
 	// check all products
 	for (XnUInt32 i = 0; i < ms_supportedProductsCount; ++i)
 	{
+		xnLogVerbose(XN_LOG_MASK_ALL, "XnDeviceEnumeration check all products %d ", i);
 		// register for USB events
 		XnRegistrationHandle hRegistration = NULL;
 		nRetVal = xnUSBRegisterToConnectivityEvents(ms_supportedProducts[i].vendorID, ms_supportedProducts[i].productID, OnConnectivityEventCallback, &ms_supportedProducts[i], &hRegistration);
 		XN_IS_STATUS_OK(nRetVal);
+
+		xnLogVerbose(XN_LOG_MASK_ALL, "XnDeviceEnumeration xnUSBRegisterToConnectivityEvents done ");
+
 
 		nRetVal = ms_aRegistrationHandles.AddLast(hRegistration);
 		XN_IS_STATUS_OK(nRetVal);

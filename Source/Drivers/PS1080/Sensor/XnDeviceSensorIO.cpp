@@ -49,8 +49,9 @@ XnStatus XnSensorIO::OpenDevice(const XnChar* strPath)
 	// try to open the device
 	xnLogVerbose(XN_MASK_DEVICE_IO, "Trying to open sensor '%s'...", strPath);
 	nRetVal = xnUSBOpenDeviceByPath(strPath, &m_pSensorHandle->USBDevice);
+	xnLogVerbose(XN_MASK_DEVICE_IO, "RET to open sensor %s", xnGetStatusString(nRetVal));
 	XN_IS_STATUS_OK(nRetVal);
-
+	xnLogVerbose(XN_MASK_DEVICE_IO, "open endpoint");
 	// on older firmwares, control was sent over BULK endpoints. Check if this is the case
 	xnLogVerbose(XN_MASK_DEVICE_IO, "Trying to open endpoint 0x4 for control out (for old firmwares)...");
 	nRetVal = xnUSBOpenEndPoint(m_pSensorHandle->USBDevice, 0x4, XN_USB_EP_BULK, XN_USB_DIRECTION_OUT, &m_pSensorHandle->ControlConnection.ControlOutConnectionEp);

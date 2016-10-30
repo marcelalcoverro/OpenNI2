@@ -22,6 +22,7 @@
 // Includes
 //---------------------------------------------------------------------------
 #include <XnOS.h>
+#include <XnLog.h>
 #include <string.h>
 
 #define XN_READ_IXN_BUFFER_SIZE	10*1024
@@ -225,6 +226,7 @@ XN_C_API XnStatus xnOSReadDoubleFromINI(const XnChar* cpINIFile, const XnChar* c
 
 XN_C_API XnStatus xnOSReadIntFromINI(const XnChar* cpINIFile, const XnChar* cpSection, const XnChar* cpKey, XnInt32* nDest)
 {
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnOSReadIntFromINI 1");
 	XnStatus nRetVal = XN_STATUS_OK;
 	XnBool bINIFileExists = FALSE;
 	
@@ -233,7 +235,7 @@ XN_C_API XnStatus xnOSReadIntFromINI(const XnChar* cpINIFile, const XnChar* cpSe
 	XN_VALIDATE_INPUT_PTR(cpKey);
 	XN_VALIDATE_INPUT_PTR(cpINIFile);
 	XN_VALIDATE_OUTPUT_PTR(nDest);
-
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnOSReadIntFromINI 2");
 	// Make sure the INI file exists
 	XN_VALIDATE_FILE_EXISTS_RET(cpINIFile, nRetVal, bINIFileExists, XN_STATUS_OS_INI_FILE_NOT_FOUND);
 
@@ -244,6 +246,9 @@ XN_C_API XnStatus xnOSReadIntFromINI(const XnChar* cpINIFile, const XnChar* cpSe
 	
 	*nDest = atoi(cpValueString);
 	
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnOSReadIntFromINI 3");
+
+
 	return XN_STATUS_OK;
 }
 

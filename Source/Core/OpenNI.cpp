@@ -28,8 +28,10 @@ oni::implementation::Context g_Context;
 
 ONI_C_API OniStatus oniInitialize(int /*apiVersion*/)
 {
+	xnLogVerbose(XN_LOG_MASK_ALL, "OpenNI.cpp INITIALIZE");
 	g_Context.clearErrorLogger();
 	OniStatus rc = g_Context.initialize();
+	xnLogVerbose(XN_LOG_MASK_ALL, "OpenNI.cpp g_context initialized");
 	return rc;
 }
 

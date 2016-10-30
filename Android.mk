@@ -22,7 +22,7 @@ else
 endif
 
 # Setup OpenNI2 local variables
-OPENNI2_CFLAGS := -O3 -ftree-vectorize -ffast-math -funroll-loops -fPIC -fvisibility=hidden
+OPENNI2_CFLAGS := -O3 -ftree-vectorize -ffast-math -funroll-loops -fPIC -fPIE -pie -fvisibility=hidden
 
 ifeq ($(ARCH_ARM_HAVE_ARMV7A),true) 
 	OPENNI2_CFLAGS += -march=armv7-a -mfloat-abi=softfp -mtune=cortex-a9 -mfpu=vfp

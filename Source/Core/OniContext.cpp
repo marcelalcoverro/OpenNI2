@@ -24,8 +24,8 @@
 #include <XnOSCpp.h>
 
 #if XN_PLATFORM == XN_PLATFORM_ANDROID_ARM
-static const char* ONI_CONFIGURATION_FILE = "/sdcard/OpenNI.ini";
-static const char* ONI_DEFAULT_DRIVERS_REPOSITORY = "/sdcard";
+static const char* ONI_CONFIGURATION_FILE = "OpenNI.ini";
+static const char* ONI_DEFAULT_DRIVERS_REPOSITORY = "/storage/emulated/0/";
 #else
 static const char* ONI_CONFIGURATION_FILE = "OpenNI.ini";
 static const char* ONI_DEFAULT_DRIVERS_REPOSITORY = "OpenNI2" XN_FILE_DIR_SEP "Drivers";
@@ -52,6 +52,13 @@ static void dummyFunctionToTakeAddress() {}
 
 OniStatus Context::initialize()
 {
+#ifdef ONI_PLATFORM_ANDROID_OS
+	xnLogSetMaskMinSeverity(XN_LOG_MASK_ALL, (XnLogSeverity)0);
+	xnLogSetAndroidOutput(TRUE);
+#endif
+
+
+	xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE");
 	XnBool repositoryOverridden = FALSE;
 	XnChar repositoryFromINI[XN_FILE_MAX_PATH] = {0};
 
@@ -71,6 +78,7 @@ OniStatus Context::initialize()
 		m_errorLogger.Append("Couldn't get the OpenNI shared library module's path: %s", xnGetStatusString(rc));
 		return OniStatusFromXnStatus(rc);
 	}
+	xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE 2");
 
 	XnChar strBaseDir[XN_FILE_MAX_PATH];
 	rc = xnOSGetDirName(strModulePath, strBaseDir, XN_FILE_MAX_PATH);
@@ -83,28 +91,37 @@ OniStatus Context::initialize()
 
 	s_valid = TRUE;
 
+	xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE 3");
+
 	// Read configuration file
 
 	XnChar strOniConfigurationFile[XN_FILE_MAX_PATH];
 	XnBool configurationFileExists = FALSE;
 
+	// Very unlikely to happen, but just in case.
+	m_errorLogger.Append("strBaseDir directory: %s", strBaseDir);
+	m_errorLogger.Append("ONI_CONFIGURATION_FILE directory: %s", ONI_CONFIGURATION_FILE);
+	m_errorLogger.Append("ONI_DEFAULT_DRIVERS_REPOSITORY directory: %s", ONI_DEFAULT_DRIVERS_REPOSITORY);
 	// Search the module directory for OpenNI.ini.
-	xnOSStrCopy(strOniConfigurationFile, strBaseDir, XN_FILE_MAX_PATH);
+	xnOSStrCopy(strOniConfigurationFile, ONI_DEFAULT_DRIVERS_REPOSITORY, XN_FILE_MAX_PATH);
 	rc = xnOSAppendFilePath(strOniConfigurationFile, ONI_CONFIGURATION_FILE, XN_FILE_MAX_PATH);
+	m_errorLogger.Append("strOniConfigurationFile directory: %s", strOniConfigurationFile);
 	if (rc == XN_STATUS_OK)
 	{
 		xnOSDoesFileExist(strOniConfigurationFile, &configurationFileExists);
 	}
 
-#ifdef ONI_PLATFORM_ANDROID_OS
-	xnLogSetMaskMinSeverity(XN_LOG_MASK_ALL, (XnLogSeverity)0);
-	xnLogSetAndroidOutput(TRUE);
-#endif
+	xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE 4");
+
+//#ifdef ONI_PLATFORM_ANDROID_OS
+//	xnLogSetMaskMinSeverity(XN_LOG_MASK_ALL, (XnLogSeverity)0);
+//	xnLogSetAndroidOutput(TRUE);
+//#endif
 
 	if (configurationFileExists)
 	{
 		// First, we should process the log related configuration as early as possible.
-
+		xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE 5");
 		XnInt32 nValue;
 		XnChar strLogPath[XN_FILE_MAX_PATH] = {0};
 
@@ -123,26 +140,29 @@ OniStatus Context::initialize()
 			}
 		}
 
+		xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE 6");
+		xnLogVerbose(XN_MASK_ONI_CONTEXT, strOniConfigurationFile);
+
 		rc = xnOSReadIntFromINI(strOniConfigurationFile, "Log", "Verbosity", &nValue);
 		if (rc == XN_STATUS_OK)
 		{
 			xnLogSetMaskMinSeverity(XN_LOG_MASK_ALL, (XnLogSeverity)nValue);
 		}
-
+		xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE 6.1");
 		rc = xnOSReadIntFromINI(strOniConfigurationFile, "Log", "LogToConsole", &nValue);
 		if (rc == XN_STATUS_OK)
 		{
 			xnLogSetConsoleOutput(nValue == 1);
 		}
-
+		xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE 6.2");
 		rc = xnOSReadIntFromINI(strOniConfigurationFile, "Log", "LogToFile", &nValue);
 		if (rc == XN_STATUS_OK)
 		{
 			xnLogSetFileOutput(nValue == 1);
 		}
-
+		xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE 6.3");
 		// Then, process the other device configurations.
-
+		xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE 7");
 		rc = xnOSReadStringFromINI(strOniConfigurationFile, "Device", "Override", m_overrideDevice, XN_FILE_MAX_PATH);
 		if (rc != XN_STATUS_OK)
 		{
@@ -155,7 +175,7 @@ OniStatus Context::initialize()
 			repositoryOverridden = TRUE;
 		}
 
-
+		xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE 8");
 
 		xnLogVerbose(XN_MASK_ONI_CONTEXT, "Configuration has been read from '%s'", strOniConfigurationFile);
 	}
@@ -186,6 +206,7 @@ OniStatus Context::initialize()
 		return OniStatusFromXnStatus(rc);
 	}
 
+	xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE 9");
 	// xnLogVerbose(XN_MASK_ONI_CONTEXT, "Using '%s' as driver path", strDriverPath);
 	// rc = loadLibraries(strDriverPath);
 	rc = loadLibrariesStatic();
@@ -194,6 +215,8 @@ OniStatus Context::initialize()
 	{
 		m_errorLogger.Clear();
 	}
+
+	xnLogVerbose(XN_MASK_ONI_CONTEXT, "CONTEXT INITIALIZE FINISHED");
 
 	return OniStatusFromXnStatus(rc);
 }
@@ -508,6 +531,7 @@ OniStatus Context::deviceOpen(const char* uri, const char* mode, OniDeviceHandle
 	}
 	*pDevice = pDeviceHandle;
 	pDeviceHandle->pDevice = pMyDevice;
+	xnLogVerbose(XN_MASK_ONI_CONTEXT, " pMyDevice->open(mode)");
 
 	return pMyDevice->open(mode);
 }

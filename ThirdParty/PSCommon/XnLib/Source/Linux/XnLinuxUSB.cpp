@@ -582,9 +582,13 @@ XN_C_API XnStatus xnUSBIsDevicePresent(XnUInt16 nVendorID, XnUInt16 nProductID, 
 
 XN_C_API XnStatus xnUSBEnumerateDevices(XnUInt16 nVendorID, XnUInt16 nProductID, const XnUSBConnectionString** pastrDevicePaths, XnUInt32* pnCount)
 {
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBEnumerateDevices libusb_get_device_list");
+
 	// get device list
 	libusb_device** ppDevices;
 	ssize_t nDeviceCount = libusb_get_device_list(g_InitData.pContext, &ppDevices);
+
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBEnumerateDevices libusb_get_device_list done!");
 
 	// first enumeration - count
 	XnUInt32 nCount = 0;
@@ -601,6 +605,10 @@ XN_C_API XnStatus xnUSBEnumerateDevices(XnUInt16 nVendorID, XnUInt16 nProductID,
 			libusb_free_device_list(ppDevices, 1);
 			return (XN_STATUS_USB_ENUMERATE_FAILED);
 		}
+//		xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBEnumerateDevices device desc.vendor %d ", desc.idVendor);
+//		xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBEnumerateDevices libusb_get_device_address(pDevice)  %hhu ", libusb_get_device_address(pDevice));
+//		xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBEnumerateDevices libusb_get_bus_number(pDevice) %hhu ",libusb_get_bus_number(pDevice));
+
 
 		// check if this is the requested device
 		if (desc.idVendor == nVendorID && desc.idProduct == nProductID)
@@ -617,6 +625,8 @@ XN_C_API XnStatus xnUSBEnumerateDevices(XnUInt16 nVendorID, XnUInt16 nProductID,
 		return XN_STATUS_ALLOC_FAILED;
 	}
 
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBEnumerateDevices second enumeration ");
+
 	// second enumeration - fill
 	XnUInt32 nCurrent = 0;
 	for (ssize_t i = 0; i < nDeviceCount; ++i)
@@ -631,6 +641,11 @@ XN_C_API XnStatus xnUSBEnumerateDevices(XnUInt16 nVendorID, XnUInt16 nProductID,
 			libusb_free_device_list(ppDevices, 1);
 			return (XN_STATUS_USB_ENUMERATE_FAILED);
 		}
+
+//		xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBEnumerateDevices device desc.vendor %d ", desc.idVendor);
+//		xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBEnumerateDevices libusb_get_device_address(pDevice)  %hhu ", libusb_get_device_address(pDevice));
+//		xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBEnumerateDevices libusb_get_bus_number(pDevice) %hhu ",libusb_get_bus_number(pDevice));
+
 
 		// check if this is the requested device
 		if (desc.idVendor == nVendorID && desc.idProduct == nProductID)
@@ -657,7 +672,7 @@ XN_C_API void xnUSBFreeDevicesList(const XnUSBConnectionString* astrDevicePaths)
 XN_C_API XnStatus xnUSBOpenDeviceImpl(libusb_device* pDevice, XN_USB_DEV_HANDLE* pDevHandlePtr)
 {
 	XnStatus nRetVal = XN_STATUS_OK;
-
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceImpl checkdevice %s ", xnGetStatusString(nRetVal) );
 	if (pDevice == NULL)
 	{
 		return (XN_STATUS_USB_DEVICE_NOT_FOUND);
@@ -673,6 +688,7 @@ XN_C_API XnStatus xnUSBOpenDeviceImpl(libusb_device* pDevice, XN_USB_DEV_HANDLE*
 	libusb_unref_device(pDevice);
 	pDevice = NULL;
 
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceImpl checkopen %d ", rc );
 	// now check if open failed
 	if (rc != 0)
 	{
@@ -690,6 +706,9 @@ XN_C_API XnStatus xnUSBOpenDeviceImpl(libusb_device* pDevice, XN_USB_DEV_HANDLE*
 */
 	// claim the interface (you cannot open any end point before claiming the interface)
 	rc = libusb_claim_interface(handle, 0);
+
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceImpl claim interface %d ", rc );
+
 	if (rc != 0)
 	{
 		libusb_close(handle);
@@ -705,6 +724,8 @@ XN_C_API XnStatus xnUSBOpenDeviceImpl(libusb_device* pDevice, XN_USB_DEV_HANDLE*
 		return (XN_STATUS_USB_SET_INTERFACE_FAILED);
 	}
 */
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceImpl validate alloc " );
+
 	XN_VALIDATE_ALLOC(*pDevHandlePtr, XnUSBDeviceHandle);
 	XN_USB_DEV_HANDLE pDevHandle = *pDevHandlePtr;
 	pDevHandle->hDevice = handle;
@@ -714,7 +735,10 @@ XN_C_API XnStatus xnUSBOpenDeviceImpl(libusb_device* pDevice, XN_USB_DEV_HANDLE*
 	// mark the device is of high-speed
 	pDevHandle->nDevSpeed = XN_USB_DEVICE_HIGH_SPEED;
 
+
 	nRetVal = xnUSBAsynchThreadAddRef();
+
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceImpl asyncref %s ", xnGetStatusString(nRetVal) );
 	if (nRetVal != XN_STATUS_OK)
 	{
 		xnOSFree(*pDevHandlePtr);
@@ -746,6 +770,9 @@ XN_C_API XnStatus xnUSBOpenDevice(XnUInt16 nVendorID, XnUInt16 nProductID, void*
 
 XN_C_API XnStatus xnUSBOpenDeviceByPath(const XnUSBConnectionString strDevicePath, XN_USB_DEV_HANDLE* pDevHandlePtr)
 {
+
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceByPath start");
+
 	XnStatus nRetVal = XN_STATUS_OK;
 
 	// parse connection string
@@ -764,6 +791,8 @@ XN_C_API XnStatus xnUSBOpenDeviceByPath(const XnUSBConnectionString strDevicePat
 	libusb_device** ppDevices;
 	ssize_t nDeviceCount = libusb_get_device_list(g_InitData.pContext, &ppDevices);
 
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceByPath device count %d ", nDeviceCount);
+
 	libusb_device* pRequestedDevice = NULL;
 
 	for (ssize_t i = 0; i < nDeviceCount; ++i)
@@ -779,9 +808,19 @@ XN_C_API XnStatus xnUSBOpenDeviceByPath(const XnUSBConnectionString strDevicePat
 			return (XN_STATUS_USB_ENUMERATE_FAILED);
 		}
 
+		xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceByPath device desc.vendor %d ", desc.idVendor);
+		xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceByPath libusb_get_device_address(pDevice)  %hhu ", libusb_get_device_address(pDevice));
+		xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceByPath libusb_get_bus_number(pDevice) %hhu ",libusb_get_bus_number(pDevice));
+
+
+
+		xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceByPath nVendorID  %d ", nVendorID);
+
+
 		// check if this is the requested device
 		if (desc.idVendor == nVendorID && desc.idProduct == nProductID && libusb_get_bus_number(pDevice) == nBus && libusb_get_device_address(pDevice) == nAddress)
 		{
+			xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceByPath MATCH %d ", desc.idVendor);
 			// add a reference to the device (so it won't be destroyed when list is freed)
 			libusb_ref_device(pDevice);
 			pRequestedDevice = pDevice;
@@ -792,6 +831,10 @@ XN_C_API XnStatus xnUSBOpenDeviceByPath(const XnUSBConnectionString strDevicePat
 	libusb_free_device_list(ppDevices, 1);
 
 	nRetVal = xnUSBOpenDeviceImpl(pRequestedDevice, pDevHandlePtr);
+
+	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceByPath finish %s ", xnGetStatusString(nRetVal) );
+
+
 	XN_IS_STATUS_OK(nRetVal);
 
 	return (XN_STATUS_OK);
