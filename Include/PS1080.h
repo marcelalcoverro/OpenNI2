@@ -128,6 +128,8 @@ enum
 	/** Boolean */
 	XN_MODULE_PROPERTY_FIRMWARE_TEC_DEBUG_PRINT = 0x1080FF92, // "TecDebugPrint"
 
+	/** Boolean, set only */
+	XN_MODULE_PROPERTY_READ_ALL_ENDPOINTS = 0x1080FF93,
 	/*******************************************************************/
 	/* Common stream properties                                        */
 	/*******************************************************************/
@@ -212,6 +214,7 @@ typedef enum
 	XN_SENSOR_FW_VER_5_6 = 12,
 	XN_SENSOR_FW_VER_5_7 = 13,
 	XN_SENSOR_FW_VER_5_8 = 14,
+	XN_SENSOR_FW_VER_5_9 = 15,
 } XnFWVer;
 
 typedef enum {
