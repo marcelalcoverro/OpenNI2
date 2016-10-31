@@ -61,37 +61,37 @@ typedef struct XnStreamUncompJPEGContext
 	struct jpeg_source_mgr	jSrcMgr;
 } XnStreamUncompJPEGContext;
 
-void XnStreamJPEGDecompSkipFunction(struct jpeg_decompress_struct* pjDecompStruct, long nNumBytes)
+void XnStreamJPEGDecompSkipFunction2(struct jpeg_decompress_struct* pjDecompStruct, long nNumBytes)
 {
 	// Skip bytes in the internal buffer
 	pjDecompStruct->src->next_input_byte += (size_t)nNumBytes;
 	pjDecompStruct->src->bytes_in_buffer -= (size_t)nNumBytes;
 }
 
-boolean XnStreamJPEGDecompDummyFailFunction(struct jpeg_decompress_struct* /*pjDecompStruct*/)
+boolean XnStreamJPEGDecompDummyFailFunction2(struct jpeg_decompress_struct* /*pjDecompStruct*/)
 {
 	// If we ever got to the point we need to allocate more memory, something is wrong!
 	return (FALSE);
 }
 
-void XnStreamJPEGDecompDummyFunction(struct jpeg_decompress_struct* /*pjDecompStruct*/)
+void XnStreamJPEGDecompDummyFunction2(struct jpeg_decompress_struct* /*pjDecompStruct*/)
 {
 	// Dummy libjpeg function to wrap internal buffers usage...
 }
 
-void XnStreamJPEGDummyErrorExit(j_common_ptr cinfo)
+void XnStreamJPEGDummyErrorExit2(j_common_ptr cinfo)
 {
 	XnLibJpegErrorMgr* errMgr = (XnLibJpegErrorMgr*)cinfo->err; 
 
 	longjmp(errMgr->setjmpBuffer, 1); 
 }
 
-void  XnStreamJPEGCompDummyFunction(struct jpeg_compress_struct* /*pjCompStruct*/)
+void  XnStreamJPEGCompDummyFunction2(struct jpeg_compress_struct* /*pjCompStruct*/)
 {
 	// Dummy libjpeg function to wrap internal buffers usage...
 }
 
-boolean XnStreamJPEGCompDummyFailFunction(struct jpeg_compress_struct* /*pjCompStruct*/)
+boolean XnStreamJPEGCompDummyFailFunction2(struct jpeg_compress_struct* /*pjCompStruct*/)
 {
 	// If we ever got to the point we need to allocate more memory, something is wrong!
 	return (FALSE);
@@ -211,7 +211,7 @@ XnStatus XnStreamCompressImage24J(XnStreamCompJPEGContext** ppStreamCompJPEGCont
 	return (XN_STATUS_OK);
 }
 
-void XnStreamJPEGOutputMessage(j_common_ptr cinfo)
+void XnStreamJPEGOutputMessage2(j_common_ptr cinfo)
 {
 	struct jpeg_error_mgr* err = cinfo->err;
 	int msg_code = err->msg_code;
@@ -261,9 +261,9 @@ XnStatus XnStreamInitCompressImageJ(XnStreamCompJPEGContext** ppStreamCompJPEGCo
  	jpeg_create_compress(&pStreamCompJPEGContext->jCompStruct);
  
 	pStreamCompJPEGContext->jCompStruct.dest = &pStreamCompJPEGContext->jDestMgr;
- 	pStreamCompJPEGContext->jCompStruct.dest->init_destination = XnStreamJPEGCompDummyFunction;
- 	pStreamCompJPEGContext->jCompStruct.dest->empty_output_buffer = XnStreamJPEGCompDummyFailFunction;
- 	pStreamCompJPEGContext->jCompStruct.dest->term_destination = XnStreamJPEGCompDummyFunction;
+ 	pStreamCompJPEGContext->jCompStruct.dest->init_destination = XnStreamJPEGCompDummyFunction2;
+ 	pStreamCompJPEGContext->jCompStruct.dest->empty_output_buffer = XnStreamJPEGCompDummyFailFunction2;
+ 	pStreamCompJPEGContext->jCompStruct.dest->term_destination = XnStreamJPEGCompDummyFunction2;
 
     // Update the output context pointer.
 	*ppStreamCompJPEGContext = pStreamCompJPEGContext;
@@ -287,17 +287,17 @@ XnStatus XnStreamInitUncompressImageJ(XnStreamUncompJPEGContext** ppStreamUncomp
 		return XN_STATUS_ERROR;
 
 	pStreamUncompJPEGContext->jDecompStruct.err = jpeg_std_error(&pStreamUncompJPEGContext->jErrMgr.pub);
-	pStreamUncompJPEGContext->jErrMgr.pub.output_message = XnStreamJPEGOutputMessage;
- 	pStreamUncompJPEGContext->jErrMgr.pub.error_exit = XnStreamJPEGDummyErrorExit;
+	pStreamUncompJPEGContext->jErrMgr.pub.output_message = XnStreamJPEGOutputMessage2;
+ 	pStreamUncompJPEGContext->jErrMgr.pub.error_exit = XnStreamJPEGDummyErrorExit2;
 
 	jpeg_create_decompress(&pStreamUncompJPEGContext->jDecompStruct);
  
 	pStreamUncompJPEGContext->jDecompStruct.src = &pStreamUncompJPEGContext->jSrcMgr;
-	pStreamUncompJPEGContext->jDecompStruct.src->init_source = XnStreamJPEGDecompDummyFunction;
-	pStreamUncompJPEGContext->jDecompStruct.src->fill_input_buffer = XnStreamJPEGDecompDummyFailFunction;
-	pStreamUncompJPEGContext->jDecompStruct.src->skip_input_data = XnStreamJPEGDecompSkipFunction;
+	pStreamUncompJPEGContext->jDecompStruct.src->init_source = XnStreamJPEGDecompDummyFunction2;
+	pStreamUncompJPEGContext->jDecompStruct.src->fill_input_buffer = XnStreamJPEGDecompDummyFailFunction2;
+	pStreamUncompJPEGContext->jDecompStruct.src->skip_input_data = XnStreamJPEGDecompSkipFunction2;
 	pStreamUncompJPEGContext->jDecompStruct.src->resync_to_restart = jpeg_resync_to_restart;
-	pStreamUncompJPEGContext->jDecompStruct.src->term_source = XnStreamJPEGDecompDummyFunction;
+	pStreamUncompJPEGContext->jDecompStruct.src->term_source = XnStreamJPEGDecompDummyFunction2;
 
     // Update the output context pointer.
 	*ppStreamUncompJPEGContext = pStreamUncompJPEGContext;
