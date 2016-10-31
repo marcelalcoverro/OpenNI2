@@ -222,6 +222,62 @@ OniStatus (ONI_C_DECL OzDriveroniDriverStreamConvertDepthToColorCoordinates)(voi
 void* (ONI_C_DECL OzDriveroniDriverEnableFrameSync)(void** pStreamHandles, int streamCount);
 void (ONI_C_DECL OzDriveroniDriverDisableFrameSync)(void* frameSyncGroup);
 
+
+
+///// liborbbec
+
+// As Driver
+void (ONI_C_DECL OrbbecOniDriveroniDriverCreate)(OniDriverServices* driverServices);
+void (ONI_C_DECL OrbbecOniDriveroniDriverDestroy)();
+OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverInitialize)(OniDriverDeviceConnected connectedCallback, OniDriverDeviceDisconnected disconnectedCallback,
+                                              OniDriverDeviceStateChanged deviceStateChangedCallback, void* pCookie);
+void (ONI_C_DECL OrbbecOniDriveroniDriverRun)();
+
+OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverTryDevice)(const char* uri);
+
+// As Device
+void* (ONI_C_DECL OrbbecOniDriveroniDriverDeviceOpen)(const char* uri, const char* mode);
+void (ONI_C_DECL OrbbecOniDriveroniDriverDeviceClose)(void* deviceHandle);
+
+OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverDeviceGetSensorInfoList)(void* deviceHandle, OniSensorInfo** pSensors, int* numSensors);
+
+void* (ONI_C_DECL OrbbecOniDriveroniDriverDeviceCreateStream)(void* deviceHandle, OniSensorType sensorType);
+void (ONI_C_DECL OrbbecOniDriveroniDriverDeviceDestroyStream)(void* deviceHandle, void* streamHandle);
+
+OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverDeviceSetProperty)(void* deviceHandle, int propertyId, const void* data, int dataSize);
+OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverDeviceGetProperty)(void* deviceHandle, int propertyId, void* data, int* pDataSize);
+OniBool (ONI_C_DECL OrbbecOniDriveroniDriverDeviceIsPropertySupported)(void* deviceHandle, int propertyId);
+void (ONI_C_DECL OrbbecOniDriveroniDriverDeviceSetPropertyChangedCallback)(void* deviceHandle, OniDriverPropertyChanged handler, void* pCookie);
+void (ONI_C_DECL OrbbecOniDriveroniDriverDeviceNotifyAllProperties)(void* deviceHandle);
+OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverDeviceInvoke)(void* deviceHandle, int commandId, const void* data, int dataSize);
+OniBool (ONI_C_DECL OrbbecOniDriveroniDriverDeviceIsCommandSupported)(void* deviceHandle, int commandId);
+OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverDeviceTryManualTrigger)(void* deviceHandle);
+OniBool (ONI_C_DECL OrbbecOniDriveroniDriverDeviceIsImageRegistrationModeSupported)(void* deviceHandle, OniImageRegistrationMode mode);
+
+// As Stream
+void (ONI_C_DECL OrbbecOniDriveroniDriverStreamSetServices)(void* streamHandle, OniStreamServices* pServices);
+OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverStreamSetProperty)(void* streamHandle, int propertyId, const void* data, int dataSize);
+OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverStreamGetProperty)(void* streamHandle, int propertyId, void* data, int* pDataSize);
+OniBool (ONI_C_DECL OrbbecOniDriveroniDriverStreamIsPropertySupported)(void* streamHandle, int propertyId);
+void (ONI_C_DECL OrbbecOniDriveroniDriverStreamSetPropertyChangedCallback)(void* streamHandle, OniDriverPropertyChanged handler, void* pCookie);
+void (ONI_C_DECL OrbbecOniDriveroniDriverStreamNotifyAllProperties)(void* streamHandle);
+OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverStreamInvoke)(void* streamHandle, int commandId, const void* data, int dataSize);
+OniBool (ONI_C_DECL OrbbecOniDriveroniDriverStreamIsCommandSupported)(void* streamHandle, int commandId);
+
+OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverStreamStart)(void* streamHandle);
+void (ONI_C_DECL OrbbecOniDriveroniDriverStreamStop)(void* streamHandle);
+
+int (ONI_C_DECL OrbbecOniDriveroniDriverStreamGetRequiredFrameSize)(void* streamHandle);
+
+void (ONI_C_DECL OrbbecOniDriveroniDriverStreamSetNewFrameCallback)(void* streamHandle, OniDriverNewFrame handler, void* pCookie);
+OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverStreamConvertDepthToColorCoordinates)(void* depthStreamHandle, void* colorStreamHandle, int depthX, int depthY, OniDepthPixel depthZ, int* pColorX, int* pColorY);
+
+void* (ONI_C_DECL OrbbecOniDriveroniDriverEnableFrameSync)(void** pStreamHandles, int streamCount);
+void (ONI_C_DECL OrbbecOniDriveroniDriverDisableFrameSync)(void* frameSyncGroup);
+
+
+
+
 }
 
 #endif

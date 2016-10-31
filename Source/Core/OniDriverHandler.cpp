@@ -93,6 +93,43 @@ DriverHandler::DriverHandler(const char* library, xnl::ErrorLogger& errorLogger)
 			funcs.oniDriverEnableFrameSync                        = &XnOniDriveroniDriverEnableFrameSync;
 			funcs.oniDriverDisableFrameSync                       = &XnOniDriveroniDriverDisableFrameSync;
 
+
+		}	else if (!(strcmp("liborbbec.a", library))) {
+
+			funcs.oniDriverCreate                                 = &OrbbecOniDriveroniDriverCreate;
+			funcs.oniDriverDestroy                                = &OrbbecOniDriveroniDriverDestroy;
+			funcs.oniDriverInitialize                             = &OrbbecOniDriveroniDriverInitialize;
+			funcs.oniDriverTryDevice                              = &OrbbecOniDriveroniDriverTryDevice;
+			funcs.oniDriverDeviceOpen                             = &OrbbecOniDriveroniDriverDeviceOpen;
+			funcs.oniDriverDeviceClose                            = &OrbbecOniDriveroniDriverDeviceClose;
+			funcs.oniDriverDeviceGetSensorInfoList                = &OrbbecOniDriveroniDriverDeviceGetSensorInfoList;
+			funcs.oniDriverDeviceCreateStream                     = &OrbbecOniDriveroniDriverDeviceCreateStream;
+			funcs.oniDriverDeviceDestroyStream                    = &OrbbecOniDriveroniDriverDeviceDestroyStream;
+			funcs.oniDriverDeviceSetProperty                      = &OrbbecOniDriveroniDriverDeviceSetProperty;
+			funcs.oniDriverDeviceGetProperty                      = &OrbbecOniDriveroniDriverDeviceGetProperty;
+			funcs.oniDriverDeviceIsPropertySupported              = &OrbbecOniDriveroniDriverDeviceIsPropertySupported;
+			funcs.oniDriverDeviceSetPropertyChangedCallback       = &OrbbecOniDriveroniDriverDeviceSetPropertyChangedCallback;
+			funcs.oniDriverDeviceNotifyAllProperties              = &OrbbecOniDriveroniDriverDeviceNotifyAllProperties;
+			funcs.oniDriverDeviceInvoke                           = &OrbbecOniDriveroniDriverDeviceInvoke;
+			funcs.oniDriverDeviceIsCommandSupported               = &OrbbecOniDriveroniDriverDeviceIsCommandSupported;
+			funcs.oniDriverDeviceIsImageRegistrationModeSupported = &OrbbecOniDriveroniDriverDeviceIsImageRegistrationModeSupported;
+			funcs.oniDriverDeviceTryManualTrigger                 = &OrbbecOniDriveroniDriverDeviceTryManualTrigger;
+			funcs.oniDriverStreamSetServices                      = &OrbbecOniDriveroniDriverStreamSetServices;
+			funcs.oniDriverStreamSetProperty                      = &OrbbecOniDriveroniDriverStreamSetProperty;
+			funcs.oniDriverStreamGetProperty                      = &OrbbecOniDriveroniDriverStreamGetProperty;
+			funcs.oniDriverStreamIsPropertySupported              = &OrbbecOniDriveroniDriverStreamIsPropertySupported;
+			funcs.oniDriverStreamSetPropertyChangedCallback       = &OrbbecOniDriveroniDriverStreamSetPropertyChangedCallback;
+			funcs.oniDriverStreamNotifyAllProperties              = &OrbbecOniDriveroniDriverStreamNotifyAllProperties;
+			funcs.oniDriverStreamInvoke                           = &OrbbecOniDriveroniDriverStreamInvoke;
+			funcs.oniDriverStreamIsCommandSupported               = &OrbbecOniDriveroniDriverStreamIsCommandSupported;
+			funcs.oniDriverStreamStart                            = &OrbbecOniDriveroniDriverStreamStart;
+			funcs.oniDriverStreamStop                             = &OrbbecOniDriveroniDriverStreamStop;
+			funcs.oniDriverStreamGetRequiredFrameSize             = &OrbbecOniDriveroniDriverStreamGetRequiredFrameSize;
+			funcs.oniDriverStreamSetNewFrameCallback              = &OrbbecOniDriveroniDriverStreamSetNewFrameCallback;
+			funcs.oniDriverStreamConvertDepthToColorCoordinates   = &OrbbecOniDriveroniDriverStreamConvertDepthToColorCoordinates;
+			funcs.oniDriverEnableFrameSync                        = &OrbbecOniDriveroniDriverEnableFrameSync;
+			funcs.oniDriverDisableFrameSync                       = &OrbbecOniDriveroniDriverDisableFrameSync;
+
 		} else if (!(strcmp("libOniFile.a", library))) {
 
 			funcs.oniDriverCreate                                 = &PlayerDriveroniDriverCreate;
