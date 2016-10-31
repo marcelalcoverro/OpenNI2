@@ -148,6 +148,8 @@ enum
 	/** XnPixelRegistration - get only */
 	XN_STREAM_PROPERTY_PIXEL_REGISTRATION = 0x10801001, // "PixelRegistration"
 	/** unsigned long long */
+	XN_STREAM_PROPERTY_FAST_ZOOM_CROP = 0x1080F009, // "FastZoomCrop"
+	/** unsigned long long */
 	XN_STREAM_PROPERTY_WHITE_BALANCE_ENABLED = 0x10801002, // "WhiteBalancedEnabled"
 	/** unsigned long long */ 
 	XN_STREAM_PROPERTY_GAIN = 0x10801003, // "Gain"

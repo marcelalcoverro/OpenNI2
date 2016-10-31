@@ -34,6 +34,7 @@ LOCAL_C_INCLUDES := \
 	
 ifdef OPENNI2_ANDROID_NDK_BUILD
     LOCAL_C_INCLUDES += $(LOCAL_PATH)/../ThirdParty/libusb-1.0.9-Android/libusb
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../LibJPEG
 else
     LOCAL_C_INCLUDES += external/libusb_aah/libusb 
 endif	
