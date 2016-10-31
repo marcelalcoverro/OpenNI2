@@ -229,12 +229,12 @@ XnStatus Context::loadLibrariesStatic()
 	typedef XnChar FileName[XN_FILE_MAX_PATH];
 	FileName* acsFileList = NULL;
 
-	nFileCount = 4;
+	nFileCount = 1;
 	acsFileList = XN_NEW_ARR(FileName, nFileCount);
-	strcpy(acsFileList[0], "libPS1080.a");
-	strcpy(acsFileList[1], "libOniFile.a");
-	strcpy(acsFileList[2], "libPSLink.a");
-	strcpy(acsFileList[3], "liborbbec.a");
+//	strcpy(acsFileList[0], "libPS1080.a");
+//	strcpy(acsFileList[1], "libOniFile.a");
+//	strcpy(acsFileList[2], "libPSLink.a");
+	strcpy(acsFileList[0], "liborbbec.a");
 
 	for (int i = 0; i < nFileCount; ++i)
 	{
