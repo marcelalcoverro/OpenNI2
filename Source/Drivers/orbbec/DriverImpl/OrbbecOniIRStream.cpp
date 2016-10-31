@@ -18,28 +18,42 @@
 *  limitations under the License.					     *
 *									     *
 *****************************************************************************/
-#ifndef XNONICOLORSTREAM_H
-#define XNONICOLORSTREAM_H
-
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
-#include "XnOniMapStream.h"
+#include "OrbbecOniIRStream.h"
 
 //---------------------------------------------------------------------------
-// Types
+// OrbbecOniIRStream class
 //---------------------------------------------------------------------------
-class XnOniColorStream :
-	public XnOniMapStream
+
+OrbbecOniIRStream::OrbbecOniIRStream(XnSensor* pSensor, OrbbecOniDevice* pDevice) : OrbbecOniMapStream(pSensor, XN_STREAM_TYPE_IR, ONI_SENSOR_IR, pDevice)
 {
-public:
-	XnOniColorStream(XnSensor* pSensor, XnOniDevice* pDevice);
+}
 
-	static void GetAllowedOniOutputFormatForInputFormat(XnIOImageFormats inputFormat, OniPixelFormat *aOniFormats, int *nOniFormats);
+OniStatus OrbbecOniIRStream::getProperty(int propertyId, void* data, int* pDataSize)
+{
+    switch (propertyId)
+    {
+    case ONI_STREAM_PROPERTY_MAX_VALUE:
+	if (*pDataSize != sizeof(int))
+	{
+	    return ONI_STATUS_BAD_PARAMETER;
+	}
 
-	static XnBool IsSupportedInputFormat(XnIOImageFormats inputFormat, OniPixelFormat oniFormat);
+	XnUInt64 nValue;
+	m_pSensor->GetProperty(m_strType, XN_STREAM_PROPERTY_DEVICE_MAX_IR, &nValue);
 
-	static XnBool IsPreferredInputFormat(XnIOImageFormats inputFormat, XnIOImageFormats thanFormat, OniPixelFormat oniFormat);
-};
+	*(int*)data = (int)nValue;
+	return ONI_STATUS_OK;
+    default:
+	return OrbbecOniMapStream::getProperty(propertyId, data, pDataSize);
+    }
+}
 
-#endif // XNONICOLORSTREAM_H
+OniBool OrbbecOniIRStream::isPropertySupported(int propertyId)
+{
+    return (
+	propertyId == ONI_STREAM_PROPERTY_MAX_VALUE ||
+	OrbbecOniMapStream::isPropertySupported(propertyId));
+}

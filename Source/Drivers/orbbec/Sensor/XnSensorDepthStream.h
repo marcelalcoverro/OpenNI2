@@ -76,7 +76,7 @@ public:
 	friend class XnDepthProcessor;
 	friend class XnOniDepthStream;
 
-protected:
+//protected:
 	inline XnSensorFirmwareParams* GetFirmwareParams() const { return m_Helper.GetFirmware()->GetParams(); }
 
 	//---------------------------------------------------------------------------
@@ -97,7 +97,7 @@ protected:
 	OniStatus GetSensorCalibrationInfo(void* data, int* dataSize);
 	XnStatus PopulateSensorCalibrationInfo();
 
-protected:
+//protected:
 	//---------------------------------------------------------------------------
 	// Setters
 	//---------------------------------------------------------------------------

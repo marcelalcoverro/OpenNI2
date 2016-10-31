@@ -21,7 +21,7 @@
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
-#include "XnOniColorStream.h"
+#include "OrbbecOniColorStream.h"
 #include "../Sensor/XnSensorImageStream.h"
 
 //---------------------------------------------------------------------------
@@ -35,7 +35,7 @@ static XnIOImageFormats g_anAllowedYUYVFormats[]   = { XN_IO_IMAGE_FORMAT_UNCOMP
 static XnIOImageFormats g_anAllowedJPEGFormats[]  = { XN_IO_IMAGE_FORMAT_JPEG };
 static XnIOImageFormats g_anAllowedGray8Formats[] = { XN_IO_IMAGE_FORMAT_BAYER, XN_IO_IMAGE_FORMAT_UNCOMPRESSED_BAYER };
 
-void XnOniColorStream::GetAllowedOniOutputFormatForInputFormat(XnIOImageFormats inputFormat, OniPixelFormat *aOniFormats, int *nOniFormats)
+void OrbbecOniColorStream::GetAllowedOniOutputFormatForInputFormat(XnIOImageFormats inputFormat, OniPixelFormat *aOniFormats, int *nOniFormats)
 {
 	*nOniFormats = 0;
 	for(XnUInt32 i=0; i<(sizeof(g_anAllowedRGBFormats)/sizeof(XnIOImageFormats)); ++i)
@@ -85,12 +85,12 @@ void XnOniColorStream::GetAllowedOniOutputFormatForInputFormat(XnIOImageFormats 
 	}
 }
 
-XnBool XnOniColorStream::IsSupportedInputFormat(XnIOImageFormats inputFormat, OniPixelFormat oniFormat)
+XnBool OrbbecOniColorStream::IsSupportedInputFormat(XnIOImageFormats inputFormat, OniPixelFormat oniFormat)
 {
 	return IsPreferredInputFormat(inputFormat, (XnIOImageFormats)XN_MAX_UINT32, oniFormat);
 }
 
-XnBool XnOniColorStream::IsPreferredInputFormat(XnIOImageFormats inputFormat, XnIOImageFormats thanFormat, OniPixelFormat oniFormat)
+XnBool OrbbecOniColorStream::IsPreferredInputFormat(XnIOImageFormats inputFormat, XnIOImageFormats thanFormat, OniPixelFormat oniFormat)
 {
 	XnIOImageFormats *aAllowedFormats;
 	int		  nAllowedFormats;
@@ -140,8 +140,8 @@ XnBool XnOniColorStream::IsPreferredInputFormat(XnIOImageFormats inputFormat, Xn
 // XnSensorImageGenerator class
 //---------------------------------------------------------------------------
 
-XnOniColorStream::XnOniColorStream(XnSensor* pSensor, XnOniDevice* pDevice) :
-	XnOniMapStream(pSensor, XN_STREAM_TYPE_IMAGE, ONI_SENSOR_COLOR, pDevice)
+OrbbecOniColorStream::OrbbecOniColorStream(XnSensor* pSensor, OrbbecOniDevice* pDevice) :
+	OrbbecOniMapStream(pSensor, XN_STREAM_TYPE_IMAGE, ONI_SENSOR_COLOR, pDevice)
 {
 }
 

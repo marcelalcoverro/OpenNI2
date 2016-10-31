@@ -18,25 +18,28 @@
 *  limitations under the License.					     *
 *									     *
 *****************************************************************************/
-#ifndef XNONIIRSTREAM_H
-#define XNONIIRSTREAM_H
+#ifndef ORBBECONICOLORSTREAM_H
+#define ORBBECONICOLORSTREAM_H
 
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
-#include "XnOniMapStream.h"
-#include "../Sensor/XnSensor.h"
+#include "OrbbecOniMapStream.h"
 
 //---------------------------------------------------------------------------
 // Types
 //---------------------------------------------------------------------------
-class XnOniIRStream :
-	public XnOniMapStream
+class OrbbecOniColorStream :
+	public OrbbecOniMapStream
 {
 public:
-    XnOniIRStream(XnSensor* pSensor, XnOniDevice* pDevice);
-    virtual OniStatus getProperty(int propertyId, void* data, int* pDataSize);
-    virtual OniBool isPropertySupported(int propertyId);
+	OrbbecOniColorStream(XnSensor* pSensor, OrbbecOniDevice* pDevice);
+
+	static void GetAllowedOniOutputFormatForInputFormat(XnIOImageFormats inputFormat, OniPixelFormat *aOniFormats, int *nOniFormats);
+
+	static XnBool IsSupportedInputFormat(XnIOImageFormats inputFormat, OniPixelFormat oniFormat);
+
+	static XnBool IsPreferredInputFormat(XnIOImageFormats inputFormat, XnIOImageFormats thanFormat, OniPixelFormat oniFormat);
 };
 
-#endif // XNONIIRSTREAM_H
+#endif // OrbbecOniCOLORSTREAM_H

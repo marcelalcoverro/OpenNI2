@@ -21,21 +21,21 @@
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
-#include "XnOniDevice.h"
-#include "XnOniStream.h"
-#include "XnOniDriver.h"
+#include "OrbbecOniDevice.h"
+#include "OrbbecOniStream.h"
+#include "OrbbecOniDriver.h"
 #include "../Sensor/XnDeviceEnumeration.h"
 #include "../DDK/XnPropertySetInternal.h"
 
 //---------------------------------------------------------------------------
-// XnOniDevice class
+// OrbbecOniDevice class
 //---------------------------------------------------------------------------
-XnOniDevice::XnOniDevice(const XnChar* uri, oni::driver::DriverServices& driverServices, XnOniDriver* pDriver) : m_driverServices(driverServices), m_pDriver(pDriver)
+OrbbecOniDevice::OrbbecOniDevice(const XnChar* uri, oni::driver::DriverServices& driverServices, OrbbecOniDriver* pDriver) : m_driverServices(driverServices), m_pDriver(pDriver)
 {
 	xnOSMemCopy(&m_info, XnDeviceEnumeration::GetDeviceInfo(uri), sizeof(m_info));
 }
 
-XnOniDevice::~XnOniDevice()
+OrbbecOniDevice::~OrbbecOniDevice()
 {
 	// free the allocated arrays
 	for(int i=0; i < m_numSensors; ++i)
@@ -45,7 +45,7 @@ XnOniDevice::~XnOniDevice()
 	m_sensor.Destroy();
 }
 
-XnStatus XnOniDevice::FillSupportedVideoModes()
+XnStatus OrbbecOniDevice::FillSupportedVideoModes()
 {
 	XnUInt32 nSupportedModes      = 0;
 	XnCmosPreset* pSupportedModes = NULL;
@@ -122,7 +122,7 @@ XnStatus XnOniDevice::FillSupportedVideoModes()
 			// make an OniVideoMode for each OniFormat supported by the input format
 			OniPixelFormat aOniFormats[10];
 			int	  nOniFormats = 0;
-			XnOniColorStream::GetAllowedOniOutputFormatForInputFormat((XnIOImageFormats)pSupportedModes[j].nFormat, aOniFormats, &nOniFormats);
+			OrbbecOniColorStream::GetAllowedOniOutputFormatForInputFormat((XnIOImageFormats)pSupportedModes[j].nFormat, aOniFormats, &nOniFormats);
 			for(int curOni=0; curOni<nOniFormats; ++curOni)
 			{
 				m_sensors[s].pSupportedVideoModes[writeIndex].pixelFormat = aOniFormats[curOni];
@@ -208,7 +208,7 @@ XnStatus XnOniDevice::FillSupportedVideoModes()
 	return XN_STATUS_OK;
 }
 
-XnStatus XnOniDevice::Init(const char* mode)
+XnStatus OrbbecOniDevice::Init(const char* mode)
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 
@@ -247,7 +247,7 @@ XnStatus XnOniDevice::Init(const char* mode)
 	return XN_STATUS_OK;
 }
 
-OniStatus XnOniDevice::getSensorInfoList(OniSensorInfo** pSensors, int* numSensors)
+OniStatus OrbbecOniDevice::getSensorInfoList(OniSensorInfo** pSensors, int* numSensors)
 {
 	*numSensors = m_numSensors;
 	*pSensors   = m_sensors;
@@ -255,32 +255,32 @@ OniStatus XnOniDevice::getSensorInfoList(OniSensorInfo** pSensors, int* numSenso
 	return ONI_STATUS_OK;
 }
 
-oni::driver::StreamBase* XnOniDevice::createStream(OniSensorType sensorType)
+oni::driver::StreamBase* OrbbecOniDevice::createStream(OniSensorType sensorType)
 {
-	XnOniStream* pStream;
+	OrbbecOniStream* pStream;
 
 	if (sensorType == ONI_SENSOR_DEPTH)
 	{
-		pStream = XN_NEW(XnOniDepthStream, &m_sensor, this);
+		pStream = XN_NEW(OrbbecOniDepthStream, &m_sensor, this);
 	}
 	else if (sensorType == ONI_SENSOR_COLOR)
 	{
-		pStream = XN_NEW(XnOniColorStream, &m_sensor, this);
+		pStream = XN_NEW(OrbbecOniColorStream, &m_sensor, this);
 	}
 	else if (sensorType == ONI_SENSOR_IR)
 	{
-		pStream = XN_NEW(XnOniIRStream, &m_sensor, this);
+		pStream = XN_NEW(OrbbecOniIRStream, &m_sensor, this);
 	}
 	else
 	{
-		m_driverServices.errorLoggerAppend("XnOniDevice: Can't create a stream of type %d", sensorType);
+		m_driverServices.errorLoggerAppend("OrbbecOniDevice: Can't create a stream of type %d", sensorType);
 		return NULL;
 	}
 
 	XnStatus nRetVal = pStream->Init();
 	if (nRetVal != XN_STATUS_OK)
 	{
-		m_driverServices.errorLoggerAppend("XnOniDevice: Can't initialize stream of type %d: %s", sensorType, xnGetStatusString(nRetVal));
+		m_driverServices.errorLoggerAppend("OrbbecOniDevice: Can't initialize stream of type %d: %s", sensorType, xnGetStatusString(nRetVal));
 		XN_DELETE(pStream);
 		return NULL;
 	}
@@ -288,12 +288,12 @@ oni::driver::StreamBase* XnOniDevice::createStream(OniSensorType sensorType)
 	return pStream;
 }
 
-void XnOniDevice::destroyStream(oni::driver::StreamBase* pStream)
+void OrbbecOniDevice::destroyStream(oni::driver::StreamBase* pStream)
 {
 	XN_DELETE(pStream);
 }
 
-OniStatus XnOniDevice::getProperty(int propertyId, void* data, int* pDataSize)
+OniStatus OrbbecOniDevice::getProperty(int propertyId, void* data, int* pDataSize)
 {
 	switch (propertyId)
 	{
@@ -406,7 +406,7 @@ OniStatus XnOniDevice::getProperty(int propertyId, void* data, int* pDataSize)
 	return ONI_STATUS_OK;
 }
 
-OniStatus XnOniDevice::setProperty(int propertyId, const void* data, int dataSize)
+OniStatus OrbbecOniDevice::setProperty(int propertyId, const void* data, int dataSize)
 {
 	switch (propertyId)
 	{
@@ -449,7 +449,7 @@ OniStatus XnOniDevice::setProperty(int propertyId, const void* data, int dataSiz
 	}
 	return ONI_STATUS_OK;
 }
-OniBool XnOniDevice::isPropertySupported(int propertyId)
+OniBool OrbbecOniDevice::isPropertySupported(int propertyId)
 {
 	if (propertyId == ONI_DEVICE_PROPERTY_DRIVER_VERSION ||
 		propertyId == ONI_DEVICE_PROPERTY_IMAGE_REGISTRATION ||
@@ -467,7 +467,7 @@ OniBool XnOniDevice::isPropertySupported(int propertyId)
 	}
 }
 
-void XnOniDevice::notifyAllProperties()
+void OrbbecOniDevice::notifyAllProperties()
 {
 	XnUInt32 nValue = (XnUInt32)m_sensor.GetCurrentUsbInterface();
 	int size = sizeof(nValue);
@@ -496,9 +496,9 @@ void XnOniDevice::notifyAllProperties()
 	raisePropertyChanged(XN_MODULE_PROPERTY_VERSION, &versions, size);
 }
 
-OniStatus XnOniDevice::EnableFrameSync(XnOniStream** pStreams, int streamCount)
+OniStatus OrbbecOniDevice::EnableFrameSync(OrbbecOniStream** pStreams, int streamCount)
 {
-	// Translate the XnOniStream to XnDeviceStream.
+	// Translate the OrbbecOniStream to XnDeviceStream.
 	xnl::Array<XnDeviceStream*> streams(streamCount);
 	streams.SetSize(streamCount);
 	for (int i = 0; i < streamCount; ++i)
@@ -517,7 +517,7 @@ OniStatus XnOniDevice::EnableFrameSync(XnOniStream** pStreams, int streamCount)
 	return ONI_STATUS_OK;
 }
 
-void XnOniDevice::DisableFrameSync()
+void OrbbecOniDevice::DisableFrameSync()
 {
 	XnStatus rc = m_sensor.SetFrameSyncStreamGroup(NULL, 0);
 	if (rc != XN_STATUS_OK)
@@ -526,7 +526,7 @@ void XnOniDevice::DisableFrameSync()
 	}
 }
 
-OniBool XnOniDevice::isImageRegistrationModeSupported(OniImageRegistrationMode mode)
+OniBool OrbbecOniDevice::isImageRegistrationModeSupported(OniImageRegistrationMode mode)
 {
 	return (mode == ONI_IMAGE_REGISTRATION_DEPTH_TO_COLOR || mode == ONI_IMAGE_REGISTRATION_OFF);
 }

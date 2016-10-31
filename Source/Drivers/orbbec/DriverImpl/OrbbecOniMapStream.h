@@ -18,23 +18,23 @@
 *  limitations under the License.					     *
 *									     *
 *****************************************************************************/
-#ifndef XNONIMAPSTREAM_H
-#define XNONIMAPSTREAM_H
+#ifndef ORBBECONIMAPSTREAM_H
+#define ORBBECONIMAPSTREAM_H
 
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
-#include "XnOniStream.h"
+#include "OrbbecOniStream.h"
 
 //---------------------------------------------------------------------------
 // Types
 //---------------------------------------------------------------------------
-class XnOniMapStream :
-	public XnOniStream
+class OrbbecOniMapStream :
+	public OrbbecOniStream
 {
 public:
-	XnOniMapStream(XnSensor* pSensor, const XnChar* strName, OniSensorType sensorType, XnOniDevice* pDevice);
-	virtual ~XnOniMapStream();
+	OrbbecOniMapStream(XnSensor* pSensor, const XnChar* strName, OniSensorType sensorType, OrbbecOniDevice* pDevice);
+	virtual ~OrbbecOniMapStream();
 
 	virtual XnStatus Init();
 
@@ -66,4 +66,4 @@ private:
 	XnStatus FillSupportedVideoModes();
 };
 
-#endif // XNONIMAPSTREAM_H
+#endif // OrbbecOniMapStream_H

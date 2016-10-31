@@ -20,6 +20,7 @@
 *****************************************************************************/
 #include "XnDeviceEnumeration.h"
 #include <XnUSB.h>
+#include <XnLog.h>
 
 //---------------------------------------------------------------------------
 // Globals
@@ -57,6 +58,8 @@ XnStatus XnDeviceEnumeration::Initialize()
     {
         return XN_STATUS_OK;
     }
+
+	xnLogVerbose(XN_LOG_MASK_ALL, "XnDeviceEnumeration Orbbec Initializing USB...");
 
     nRetVal = xnUSBInit();
     XN_IS_STATUS_OK(nRetVal);

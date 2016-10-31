@@ -21,33 +21,39 @@
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
-#include "XnOniDriver.h"
-#include "XnOniDevice.h"
+#include "OrbbecOniDriver.h"
+#include "OrbbecOniDevice.h"
 #include <XnCommon.h>
 #include <XnOS.h>
 #include "../Sensor/XnSensor.h"
 #include "../Sensor/XnDeviceEnumeration.h"
 #include <XnLogWriterBase.h>
+#include <XnLog.h>
 
 //---------------------------------------------------------------------------
-// XnOniDriver class
+// OrbbecOniDriver class
 //---------------------------------------------------------------------------
-XnOniDriver::XnOpenNILogWriter::XnOpenNILogWriter(OniDriverServices* pDriverServices) : m_pDriverServices(pDriverServices)
+OrbbecOniDriver::XnOpenNILogWriter::XnOpenNILogWriter(OniDriverServices* pDriverServices) : m_pDriverServices(pDriverServices)
 {
 }
 
-void XnOniDriver::XnOpenNILogWriter::WriteEntry(const XnLogEntry* pEntry)
+void OrbbecOniDriver::XnOpenNILogWriter::WriteEntry(const XnLogEntry* pEntry)
 {
 	m_pDriverServices->log(m_pDriverServices, pEntry->nSeverity, pEntry->strFile, pEntry->nLine, pEntry->strMask, pEntry->strMessage);
 }
 
-void XnOniDriver::XnOpenNILogWriter::WriteUnformatted(const XnChar* /*strMessage*/)
+void OrbbecOniDriver::XnOpenNILogWriter::WriteUnformatted(const XnChar* /*strMessage*/)
 {
 	// DO NOTHING
 }
 
-OniStatus XnOniDriver::initialize(oni::driver::DeviceConnectedCallback deviceConnectedCallback, oni::driver::DeviceDisconnectedCallback deviceDisconnectedCallback, oni::driver::DeviceStateChangedCallback deviceStateChangedCallback, void* pCookie)
+OniStatus OrbbecOniDriver::initialize(oni::driver::DeviceConnectedCallback deviceConnectedCallback, oni::driver::DeviceDisconnectedCallback deviceDisconnectedCallback, oni::driver::DeviceStateChangedCallback deviceStateChangedCallback, void* pCookie)
 {
+	xnLogVerbose(XN_LOG_MASK_ALL, "OrbbecOniDriver orbbec initialize ");
+
+	xnLogVerbose(XN_LOG_MASK_ALL, "OrbbecOniDriver orbbec call DriverBase::initialize ");
+
+
 	OniStatus nRetVal = DriverBase::initialize(deviceConnectedCallback, deviceDisconnectedCallback, deviceStateChangedCallback, pCookie);
 	if (nRetVal != ONI_STATUS_OK)
 	{
@@ -78,7 +84,7 @@ OniStatus XnOniDriver::initialize(oni::driver::DeviceConnectedCallback deviceCon
 	return ONI_STATUS_OK;
 }
 
-void XnOniDriver::shutdown()
+void OrbbecOniDriver::shutdown()
 {
 	if (m_connectedEventHandle != NULL)
 	{
@@ -93,7 +99,7 @@ void XnOniDriver::shutdown()
 	}
 
 	// Close all open devices and release the memory
-	for (xnl::StringsHash<XnOniDevice*>::Iterator it = m_devices.Begin(); it != m_devices.End(); ++it)
+	for (xnl::StringsHash<OrbbecOniDevice*>::Iterator it = m_devices.Begin(); it != m_devices.End(); ++it)
 	{
 		XN_DELETE(it->Value());
 	}
@@ -103,9 +109,9 @@ void XnOniDriver::shutdown()
 	XnDeviceEnumeration::Shutdown();
 }
 
-oni::driver::DeviceBase* XnOniDriver::deviceOpen(const char* uri, const char* mode)
+oni::driver::DeviceBase* OrbbecOniDriver::deviceOpen(const char* uri, const char* mode)
 {
-	XnOniDevice* pDevice = NULL;
+	OrbbecOniDevice* pDevice = NULL;
 
 	// if device was already opened for this uri, return the previous one
 	if (m_devices.Get(uri, pDevice) == XN_STATUS_OK)
@@ -114,7 +120,7 @@ oni::driver::DeviceBase* XnOniDriver::deviceOpen(const char* uri, const char* mo
 		return NULL;
 	}
 
-	pDevice = XN_NEW(XnOniDevice, uri, getServices(), this);
+	pDevice = XN_NEW(OrbbecOniDevice, uri, getServices(), this);
 	XnStatus nRetVal = pDevice->Init(mode);
 	if (nRetVal != XN_STATUS_OK)
 	{
@@ -138,9 +144,9 @@ oni::driver::DeviceBase* XnOniDriver::deviceOpen(const char* uri, const char* mo
 	return pDevice;
 }
 
-void XnOniDriver::deviceClose(oni::driver::DeviceBase* pDevice)
+void OrbbecOniDriver::deviceClose(oni::driver::DeviceBase* pDevice)
 {
-	for (xnl::StringsHash<XnOniDevice*>::Iterator iter = m_devices.Begin(); iter != m_devices.End(); ++iter)
+	for (xnl::StringsHash<OrbbecOniDevice*>::Iterator iter = m_devices.Begin(); iter != m_devices.End(); ++iter)
 	{
 		if (iter->Value() == pDevice)
 		{
@@ -154,13 +160,13 @@ void XnOniDriver::deviceClose(oni::driver::DeviceBase* pDevice)
 	XN_ASSERT(FALSE);
 }
 
-void* XnOniDriver::enableFrameSync(oni::driver::StreamBase** pStreams, int streamCount)
+void* OrbbecOniDriver::enableFrameSync(oni::driver::StreamBase** pStreams, int streamCount)
 {
 	// Make sure all the streams belong to same device.
-	XnOniDevice* pDevice = NULL;
+	OrbbecOniDevice* pDevice = NULL;
 	for (int i = 0; i < streamCount; ++i)
 	{
-		XnOniStream* pStream = dynamic_cast<XnOniStream*>(pStreams[i]);
+		OrbbecOniStream* pStream = dynamic_cast<OrbbecOniStream*>(pStreams[i]);
 		if (pStreams == NULL)
 		{
 			// Not allowed.
@@ -189,7 +195,7 @@ void* XnOniDriver::enableFrameSync(oni::driver::StreamBase** pStreams, int strea
 	pFrameSyncGroup->pDevice = pDevice;
 
 	// Enable the frame sync.
-	OniStatus rc = pDevice->EnableFrameSync((XnOniStream**)pStreams, streamCount);
+	OniStatus rc = pDevice->EnableFrameSync((OrbbecOniStream**)pStreams, streamCount);
 	if (rc != ONI_STATUS_OK)
 	{
 		XN_DELETE(pFrameSyncGroup);
@@ -200,12 +206,12 @@ void* XnOniDriver::enableFrameSync(oni::driver::StreamBase** pStreams, int strea
 	return pFrameSyncGroup;
 }
 
-void XnOniDriver::disableFrameSync(void* frameSyncGroup)
+void OrbbecOniDriver::disableFrameSync(void* frameSyncGroup)
 {
 	FrameSyncGroup* pFrameSyncGroup = (FrameSyncGroup*)frameSyncGroup;
 
 	// Find device in driver.
-	xnl::StringsHash<XnOniDevice*>::ConstIterator iter = m_devices.Begin();
+	xnl::StringsHash<OrbbecOniDevice*>::ConstIterator iter = m_devices.Begin();
 	while (iter != m_devices.End())
 	{
 		// Make sure device belongs to driver.
@@ -219,10 +225,10 @@ void XnOniDriver::disableFrameSync(void* frameSyncGroup)
 	}
 }
 
-void XN_CALLBACK_TYPE XnOniDriver::OnDevicePropertyChanged(const XnChar* ModuleName, XnUInt32 nPropertyId, void* pCookie)
+void XN_CALLBACK_TYPE OrbbecOniDriver::OnDevicePropertyChanged(const XnChar* ModuleName, XnUInt32 nPropertyId, void* pCookie)
 {
-	XnOniDevice* pDevice = (XnOniDevice*)pCookie;
-	XnOniDriver* pThis = pDevice->GetDriver();
+	OrbbecOniDevice* pDevice = (OrbbecOniDevice*)pCookie;
+	OrbbecOniDriver* pThis = pDevice->GetDriver();
 
 	if (nPropertyId == XN_MODULE_PROPERTY_ERROR_STATE)
 	{
@@ -266,14 +272,14 @@ void XN_CALLBACK_TYPE XnOniDriver::OnDevicePropertyChanged(const XnChar* ModuleN
 	}
 }
 
-void XN_CALLBACK_TYPE XnOniDriver::OnDeviceConnected(const OniDeviceInfo& deviceInfo, void* pCookie)
+void XN_CALLBACK_TYPE OrbbecOniDriver::OnDeviceConnected(const OniDeviceInfo& deviceInfo, void* pCookie)
 {
-	XnOniDriver* pThis = (XnOniDriver*)pCookie;
+	OrbbecOniDriver* pThis = (OrbbecOniDriver*)pCookie;
 	pThis->deviceConnected(&deviceInfo);
 }
 
-void XN_CALLBACK_TYPE XnOniDriver::OnDeviceDisconnected(const OniDeviceInfo& deviceInfo, void* pCookie)
+void XN_CALLBACK_TYPE OrbbecOniDriver::OnDeviceDisconnected(const OniDeviceInfo& deviceInfo, void* pCookie)
 {
-	XnOniDriver* pThis = (XnOniDriver*)pCookie;
+	OrbbecOniDriver* pThis = (OrbbecOniDriver*)pCookie;
 	pThis->deviceDisconnected(&deviceInfo);
 }

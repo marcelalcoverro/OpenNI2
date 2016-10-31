@@ -18,8 +18,8 @@
 *  limitations under the License.					     *
 *									     *
 *****************************************************************************/
-#ifndef XNONIDRIVER_H
-#define XNONIDRIVER_H
+#ifndef ORBBECONIDRIVER_H
+#define ORBBECONIDRIVER_H
 
 //---------------------------------------------------------------------------
 // Includes
@@ -27,17 +27,17 @@
 #include <Driver/OniDriverAPI.h>
 #include <XnLib.h>
 #include <XnStringsHash.h>
-#include "XnOniDevice.h"
+#include "OrbbecOniDevice.h"
 #include <XnLogWriterBase.h>
 
 //---------------------------------------------------------------------------
 // Types
 //---------------------------------------------------------------------------
-class XnOniDriver :
+class OrbbecOniDriver :
 	public oni::driver::DriverBase
 {
 public:
-	XnOniDriver(OniDriverServices* pDriverServices) : DriverBase(pDriverServices), m_writer(pDriverServices), m_connectedEventHandle(NULL), m_disconnectedEventHandle(NULL)
+	OrbbecOniDriver(OniDriverServices* pDriverServices) : DriverBase(pDriverServices), m_writer(pDriverServices), m_connectedEventHandle(NULL), m_disconnectedEventHandle(NULL)
 	{}
 
 	virtual OniStatus initialize(oni::driver::DeviceConnectedCallback deviceConnectedCallback, oni::driver::DeviceDisconnectedCallback deviceDisconnectedCallback, oni::driver::DeviceStateChangedCallback deviceStateChangedCallback, void* pCookie);
@@ -56,8 +56,8 @@ protected:
 	static void XN_CALLBACK_TYPE OnDeviceConnected(const OniDeviceInfo& deviceInfo, void* pCookie);
 	static void XN_CALLBACK_TYPE OnDeviceDisconnected(const OniDeviceInfo& deviceInfo, void* pCookie);
 
-	//uri -> XnOniDevice map
-	xnl::StringsHash<XnOniDevice*> m_devices;
+	//uri -> OrbbecOniDevice map
+	xnl::StringsHash<OrbbecOniDevice*> m_devices;
 
 private:
 	class XnOpenNILogWriter : public XnLogWriterBase
@@ -73,7 +73,7 @@ private:
 
 	typedef struct
 	{
-		XnOniDevice* pDevice;
+		OrbbecOniDevice* pDevice;
 	} FrameSyncGroup;
 
 	XnOpenNILogWriter m_writer;
@@ -81,4 +81,4 @@ private:
 	XnCallbackHandle m_disconnectedEventHandle;
 };
 
-#endif // XNONIDRIVER_H
+#endif // OrbbecOniDRIVER_H

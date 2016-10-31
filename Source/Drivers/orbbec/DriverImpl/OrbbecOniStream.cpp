@@ -21,13 +21,13 @@
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
-#include "XnOniStream.h"
+#include "OrbbecOniStream.h"
 #include "DDK/XnFrameStream.h"
 
 //---------------------------------------------------------------------------
-// XnOniStream class
+// OrbbecOniStream class
 //---------------------------------------------------------------------------
-XnOniStream::XnOniStream(XnSensor* pSensor, const XnChar* strName, OniSensorType sensorType, XnOniDevice* pDevice) :
+OrbbecOniStream::OrbbecOniStream(XnSensor* pSensor, const XnChar* strName, OniSensorType sensorType, OrbbecOniDevice* pDevice) :
 	m_sensorType(sensorType),
 	m_pSensor(pSensor),
 	m_strType(strName),
@@ -36,12 +36,12 @@ XnOniStream::XnOniStream(XnSensor* pSensor, const XnChar* strName, OniSensorType
 {
 }
 
-XnOniStream::~XnOniStream()
+OrbbecOniStream::~OrbbecOniStream()
 {
 	destroy();
 }
 
-XnStatus XnOniStream::Init()
+XnStatus OrbbecOniStream::Init()
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 
@@ -57,20 +57,20 @@ XnStatus XnOniStream::Init()
 	return (XN_STATUS_OK);
 }
 
-void XnOniStream::destroy()
+void OrbbecOniStream::destroy()
 {
 	stop();
 	m_pSensor->UnregisterFromNewStreamData(m_hNewDataCallback);
 	m_pSensor->DestroyStream(m_strType);
 }
 
-void XnOniStream::setServices(oni::driver::StreamServices* pStreamServices)
+void OrbbecOniStream::setServices(oni::driver::StreamServices* pStreamServices)
 {
 	oni::driver::StreamBase::setServices(pStreamServices);
 	m_pDeviceStream->SetServices(*pStreamServices);
 }
 
-OniStatus XnOniStream::start()
+OniStatus OrbbecOniStream::start()
 {
 	XnStatus nRetVal = ONI_STATUS_OK;
 
@@ -95,7 +95,7 @@ OniStatus XnOniStream::start()
 	return ONI_STATUS_OK;
 }
 
-void XnOniStream::stop()
+void OrbbecOniStream::stop()
 {
 	if (m_started)
 	{
@@ -111,7 +111,7 @@ void XnOniStream::stop()
 	}
 }
 
-OniStatus XnOniStream::getProperty(int propertyId, void* data, int* pDataSize)
+OniStatus OrbbecOniStream::getProperty(int propertyId, void* data, int* pDataSize)
 {
 	XnStatus nRetVal = m_pDeviceStream->GetProperty(propertyId, data, pDataSize);
 	if (nRetVal != XN_STATUS_OK)
@@ -121,7 +121,7 @@ OniStatus XnOniStream::getProperty(int propertyId, void* data, int* pDataSize)
 	return ONI_STATUS_OK;
 }
 
-OniStatus XnOniStream::setProperty(int propertyId, const void* data, int dataSize)
+OniStatus OrbbecOniStream::setProperty(int propertyId, const void* data, int dataSize)
 {
 	xnl::AutoCSLocker locker(*m_pDeviceStream->GetOpenLock());
 
@@ -150,28 +150,28 @@ OniStatus XnOniStream::setProperty(int propertyId, const void* data, int dataSiz
 	}
 }
 
-XnStatus XnOniStream::SetPropertyImpl(int propertyId, const void* data, int dataSize)
+XnStatus OrbbecOniStream::SetPropertyImpl(int propertyId, const void* data, int dataSize)
 {
 	return m_pDeviceStream->SetProperty(propertyId, data, dataSize);
 }
 
-OniBool XnOniStream::isPropertySupported(int propertyId)
+OniBool OrbbecOniStream::isPropertySupported(int propertyId)
 {
 	XnBool exists;
 	m_pDeviceStream->DoesPropertyExist(propertyId, &exists);
 	return (exists == TRUE);
 }
 
-void XN_CALLBACK_TYPE XnOniStream::OnNewStreamDataEventHandler(const XnNewStreamDataEventArgs& args, void* pCookie)
+void XN_CALLBACK_TYPE OrbbecOniStream::OnNewStreamDataEventHandler(const XnNewStreamDataEventArgs& args, void* pCookie)
 {
-	XnOniStream* pThis = (XnOniStream*)pCookie;
+	OrbbecOniStream* pThis = (OrbbecOniStream*)pCookie;
 	if (pThis->m_started && strcmp(args.strStreamName, pThis->m_strType) == 0)
 	{
 		pThis->raiseNewFrame(args.pFrame);
 	}
 }
 
-int XnOniStream::getRequiredFrameSize()
+int OrbbecOniStream::getRequiredFrameSize()
 {
 	return m_pDeviceStream->GetRequiredDataSize();
 }

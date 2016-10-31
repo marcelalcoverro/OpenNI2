@@ -18,27 +18,27 @@
 *  limitations under the License.					     *
 *									     *
 *****************************************************************************/
-#ifndef XNONIDEPTHSTREAM_H
-#define XNONIDEPTHSTREAM_H
+#ifndef ORBBECONIDEPTHSTREAM_H
+#define ORBBECONIDEPTHSTREAM_H
 
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
-#include "XnOniMapStream.h"
+#include "OrbbecOniMapStream.h"
 #include "../Sensor/XnSensor.h"
 
 //---------------------------------------------------------------------------
 // Types
 //---------------------------------------------------------------------------
-class XnOniDepthStream :
-	public XnOniMapStream
+class OrbbecOniDepthStream :
+	public OrbbecOniMapStream
 {
 public:
-	XnOniDepthStream(XnSensor* pSensor, XnOniDevice* pDevice);
+	OrbbecOniDepthStream(XnSensor* pSensor, OrbbecOniDevice* pDevice);
 	virtual OniStatus getProperty(int propertyId, void* data, int* pDataSize);
 	virtual OniBool isPropertySupported(int propertyId);
 	virtual void notifyAllProperties();
 	virtual OniStatus convertDepthToColorCoordinates(StreamBase* colorStream, int depthX, int depthY, OniDepthPixel depthZ, int* pColorX, int* pColorY);
 };
 
-#endif // XNONIDEPTHSTREAM_H
+#endif // OrbbecOniDEPTHSTREAM_H

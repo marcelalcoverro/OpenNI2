@@ -18,15 +18,25 @@
 *  limitations under the License.					     *
 *									     *
 *****************************************************************************/
+#ifndef ORBBECONIIRSTREAM_H
+#define ORBBECONIIRSTREAM_H
+
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
-#include "XnOniDriver.h"
+#include "OrbbecOniMapStream.h"
+#include "../Sensor/XnSensor.h"
 
 //---------------------------------------------------------------------------
-// XnOniDriver EXPORT
+// Types
 //---------------------------------------------------------------------------
-ONI_EXPORT_DRIVER(XnOniDriver , OrbbecOniDriver);
+class OrbbecOniIRStream :
+	public OrbbecOniMapStream
+{
+public:
+    OrbbecOniIRStream(XnSensor* pSensor, OrbbecOniDevice* pDevice);
+    virtual OniStatus getProperty(int propertyId, void* data, int* pDataSize);
+    virtual OniBool isPropertySupported(int propertyId);
+};
 
-// The following line is needed to be once in *ALL* of the high level shared library modules. DO NOT REMOVE!!!
-XN_API_EXPORT_INIT()
+#endif // OrbbecOniIRSTREAM_H

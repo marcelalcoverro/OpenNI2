@@ -21,19 +21,19 @@
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
-#include "XnOniDepthStream.h"
+#include "OrbbecOniDepthStream.h"
 #include "../Sensor/XnSensorDepthStream.h"
 
 //---------------------------------------------------------------------------
-// XnOniDepthStream class
+// OrbbecOniDepthStream class
 //---------------------------------------------------------------------------
 
-XnOniDepthStream::XnOniDepthStream(XnSensor* pSensor, XnOniDevice* pDevice) :
-	XnOniMapStream(pSensor, XN_STREAM_TYPE_DEPTH, ONI_SENSOR_DEPTH, pDevice)
+OrbbecOniDepthStream::OrbbecOniDepthStream(XnSensor* pSensor, OrbbecOniDevice* pDevice) :
+	OrbbecOniMapStream(pSensor, XN_STREAM_TYPE_DEPTH, ONI_SENSOR_DEPTH, pDevice)
 {
 }
 
-OniStatus XnOniDepthStream::getProperty(int propertyId, void* data, int* pDataSize)
+OniStatus OrbbecOniDepthStream::getProperty(int propertyId, void* data, int* pDataSize)
 {
 	switch (propertyId)
 	{
@@ -59,22 +59,22 @@ OniStatus XnOniDepthStream::getProperty(int propertyId, void* data, int* pDataSi
 	case XN_STREAM_PROPERTY_DEPTH_SENSOR_CALIBRATION_INFO:
 		return ((XnSensorDepthStream*)m_pDeviceStream)->GetSensorCalibrationInfo(data, pDataSize);
 	default:
-		return XnOniMapStream::getProperty(propertyId, data, pDataSize);
+		return OrbbecOniMapStream::getProperty(propertyId, data, pDataSize);
 	}
 }
 
-OniBool XnOniDepthStream::isPropertySupported(int propertyId)
+OniBool OrbbecOniDepthStream::isPropertySupported(int propertyId)
 {
 	return (
 		propertyId == ONI_STREAM_PROPERTY_MAX_VALUE ||
 		propertyId == ONI_STREAM_PROPERTY_MIN_VALUE ||
 		propertyId == XN_STREAM_PROPERTY_DEPTH_SENSOR_CALIBRATION_INFO ||
-		XnOniMapStream::isPropertySupported(propertyId));
+		OrbbecOniMapStream::isPropertySupported(propertyId));
 }
 
-void XnOniDepthStream::notifyAllProperties()
+void OrbbecOniDepthStream::notifyAllProperties()
 {
-	XnOniMapStream::notifyAllProperties();
+	OrbbecOniMapStream::notifyAllProperties();
 
 	XnUInt32 nValue;
 	int size = sizeof(nValue);
@@ -148,10 +148,10 @@ void XnOniDepthStream::notifyAllProperties()
 	raisePropertyChanged(XN_STREAM_PROPERTY_DEPTH_SENSOR_CALIBRATION_INFO, &calibrationInfo, size);
 }
 
-OniStatus XnOniDepthStream::convertDepthToColorCoordinates(StreamBase* colorStream, int depthX, int depthY, OniDepthPixel depthZ, int* pColorX, int* pColorY)
+OniStatus OrbbecOniDepthStream::convertDepthToColorCoordinates(StreamBase* colorStream, int depthX, int depthY, OniDepthPixel depthZ, int* pColorX, int* pColorY)
 {
 	// take video mode from the color stream
-	XnOniMapStream* pColorStream = (XnOniMapStream*)colorStream;
+	OrbbecOniMapStream* pColorStream = (OrbbecOniMapStream*)colorStream;
 
 	OniVideoMode videoMode;
 	XnStatus retVal = pColorStream->GetVideoMode(&videoMode);

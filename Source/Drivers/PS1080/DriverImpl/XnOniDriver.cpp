@@ -48,6 +48,10 @@ void XnOniDriver::XnOpenNILogWriter::WriteUnformatted(const XnChar* /*strMessage
 
 OniStatus XnOniDriver::initialize(oni::driver::DeviceConnectedCallback deviceConnectedCallback, oni::driver::DeviceDisconnectedCallback deviceDisconnectedCallback, oni::driver::DeviceStateChangedCallback deviceStateChangedCallback, void* pCookie)
 {
+	xnLogVerbose(XN_LOG_MASK_ALL, "XnOniDriver PS1080 initialize ");
+
+	xnLogVerbose(XN_LOG_MASK_ALL, "XnOniDriver PS1080 call DriverBase::initialize ");
+
 	OniStatus nRetVal = DriverBase::initialize(deviceConnectedCallback, deviceDisconnectedCallback, deviceStateChangedCallback, pCookie);
 	if (nRetVal != ONI_STATUS_OK)
 	{

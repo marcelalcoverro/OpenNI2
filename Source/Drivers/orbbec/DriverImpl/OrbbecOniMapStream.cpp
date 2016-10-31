@@ -21,22 +21,22 @@
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
-#include "XnOniMapStream.h"
-#include "XnOniColorStream.h"
+#include "OrbbecOniMapStream.h"
+#include "OrbbecOniColorStream.h"
 #include <XnLog.h>
 
 //---------------------------------------------------------------------------
-// XnOniMapStream class
+// OrbbecOniMapStream class
 //---------------------------------------------------------------------------
 
-XnOniMapStream::XnOniMapStream(XnSensor* pSensor, const XnChar* strName, OniSensorType sensorType, XnOniDevice* pDevice) :
-	XnOniStream(pSensor, strName, sensorType, pDevice),
+OrbbecOniMapStream::OrbbecOniMapStream(XnSensor* pSensor, const XnChar* strName, OniSensorType sensorType, OrbbecOniDevice* pDevice) :
+	OrbbecOniStream(pSensor, strName, sensorType, pDevice),
 	m_nSupportedModesCount(0),
 	m_aSupportedModes(NULL)
 {
 }
 
-XnOniMapStream::~XnOniMapStream()
+OrbbecOniMapStream::~OrbbecOniMapStream()
 {
 	if (m_aSupportedModes != NULL)
 	{
@@ -45,11 +45,11 @@ XnOniMapStream::~XnOniMapStream()
 	}
 }
 
-XnStatus XnOniMapStream::Init()
+XnStatus OrbbecOniMapStream::Init()
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 
-	nRetVal = XnOniStream::Init();
+	nRetVal = OrbbecOniStream::Init();
 	XN_IS_STATUS_OK(nRetVal);
 
 	nRetVal = FillSupportedVideoModes();
@@ -58,7 +58,7 @@ XnStatus XnOniMapStream::Init()
 	return (XN_STATUS_OK);
 }
 
-OniStatus XnOniMapStream::getProperty(int propertyId, void* data, int* pDataSize)
+OniStatus OrbbecOniMapStream::getProperty(int propertyId, void* data, int* pDataSize)
 {
 	//TODO: reconsider return values translation issues
 	XnStatus nRetVal = XN_STATUS_ERROR;
@@ -103,14 +103,14 @@ OniStatus XnOniMapStream::getProperty(int propertyId, void* data, int* pDataSize
 		}
 		default:
 		{
-			return XnOniStream::getProperty(propertyId, data, pDataSize);
+			return OrbbecOniStream::getProperty(propertyId, data, pDataSize);
 		}
 	}
 
 	return ONI_STATUS_OK;
 }
 
-XnStatus XnOniMapStream::SetPropertyImpl(int propertyId, const void* data, int dataSize)
+XnStatus OrbbecOniMapStream::SetPropertyImpl(int propertyId, const void* data, int dataSize)
 {
 	XnStatus nRetVal = XN_STATUS_ERROR;
 
@@ -157,25 +157,25 @@ XnStatus XnOniMapStream::SetPropertyImpl(int propertyId, const void* data, int d
 		}
 		default:
 		{
-			return XnOniStream::SetPropertyImpl(propertyId, data, dataSize);
+			return OrbbecOniStream::SetPropertyImpl(propertyId, data, dataSize);
 		}
 	}
 
 	return XN_STATUS_OK;
 }
 
-OniBool XnOniMapStream::isPropertySupported(int propertyId)
+OniBool OrbbecOniMapStream::isPropertySupported(int propertyId)
 {
 	return (
 		propertyId == ONI_STREAM_PROPERTY_VIDEO_MODE ||
 		propertyId == ONI_STREAM_PROPERTY_MIRRORING ||
 		propertyId == ONI_STREAM_PROPERTY_CROPPING ||
-		XnOniStream::isPropertySupported(propertyId));
+		OrbbecOniStream::isPropertySupported(propertyId));
 }
 
-void XnOniMapStream::notifyAllProperties()
+void OrbbecOniMapStream::notifyAllProperties()
 {
-	XnOniStream::notifyAllProperties();
+	OrbbecOniStream::notifyAllProperties();
 
 	XnUInt32 nValue;
 	int size = sizeof(nValue);
@@ -189,7 +189,7 @@ void XnOniMapStream::notifyAllProperties()
 	raisePropertyChanged(XN_STREAM_PROPERTY_CROPPING_MODE, &nValue, size);
 }
 
-XnStatus XnOniMapStream::GetVideoMode(OniVideoMode* pVideoMode)
+XnStatus OrbbecOniMapStream::GetVideoMode(OniVideoMode* pVideoMode)
 {
 	XnStatus nRetVal;
 	XnUInt64 nValue;
@@ -215,7 +215,7 @@ XnStatus XnOniMapStream::GetVideoMode(OniVideoMode* pVideoMode)
 	return XN_STATUS_OK;
 }
 
-XnBool EqualsResFPS(const OniVideoMode* mode1, const OniVideoMode* mode2)
+XnBool OrbbecEqualsResFPS(const OniVideoMode* mode1, const OniVideoMode* mode2)
 {
 	return (
 		mode1->resolutionX  == mode2->resolutionX &&
@@ -224,7 +224,7 @@ XnBool EqualsResFPS(const OniVideoMode* mode1, const OniVideoMode* mode2)
 		);
 }
 
-XnStatus XnOniMapStream::SetVideoMode(OniVideoMode* pVideoMode)
+XnStatus OrbbecOniMapStream::SetVideoMode(OniVideoMode* pVideoMode)
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 
@@ -247,13 +247,13 @@ XnStatus XnOniMapStream::SetVideoMode(OniVideoMode* pVideoMode)
 
 	for (XnUInt32 i = 0; i < m_nSupportedModesCount; ++i)
 	{
-		if (EqualsResFPS(pVideoMode, &m_aSupportedModes[i].OutputMode))
+		if (OrbbecEqualsResFPS(pVideoMode, &m_aSupportedModes[i].OutputMode))
 		{
 			// if current input format is supported, it will always be preferred.
 			if (m_aSupportedModes[i].nInputFormat == nCurrInputFormat)
 			{
 				if(m_sensorType == ONI_SENSOR_COLOR &&
-					XnOniColorStream::IsSupportedInputFormat((XnIOImageFormats)nCurrInputFormat, pVideoMode->pixelFormat) == FALSE)
+					OrbbecOniColorStream::IsSupportedInputFormat((XnIOImageFormats)nCurrInputFormat, pVideoMode->pixelFormat) == FALSE)
 				{
 					continue;
 				}
@@ -261,7 +261,7 @@ XnStatus XnOniMapStream::SetVideoMode(OniVideoMode* pVideoMode)
 				break;
 			}
 			else if (nChosenInputFormat == XN_MAX_UINT32 ||
-					(m_sensorType == ONI_SENSOR_COLOR && XnOniColorStream::IsPreferredInputFormat(
+					(m_sensorType == ONI_SENSOR_COLOR && OrbbecOniColorStream::IsPreferredInputFormat(
 															(XnIOImageFormats)m_aSupportedModes[i].nInputFormat,
 															(XnIOImageFormats)nChosenInputFormat,
 															pVideoMode->pixelFormat)))
@@ -297,7 +297,7 @@ XnStatus XnOniMapStream::SetVideoMode(OniVideoMode* pVideoMode)
 	return (XN_STATUS_OK);
 }
 
-XnStatus XnOniMapStream::FillSupportedVideoModes()
+XnStatus OrbbecOniMapStream::FillSupportedVideoModes()
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 
@@ -332,7 +332,7 @@ XnStatus XnOniMapStream::FillSupportedVideoModes()
 	return (XN_STATUS_OK);
 }
 
-XnStatus XnOniMapStream::GetMirror(OniBool* pEnabled)
+XnStatus OrbbecOniMapStream::GetMirror(OniBool* pEnabled)
 {
 	XnUInt64 intProperty;
 	XnStatus nRetVal = m_pSensor->GetProperty(m_strType, XN_MODULE_PROPERTY_MIRROR, &intProperty);
@@ -344,7 +344,7 @@ XnStatus XnOniMapStream::GetMirror(OniBool* pEnabled)
 	return (XN_STATUS_OK);
 }
 
-XnStatus XnOniMapStream::SetMirror(OniBool* pEnabled)
+XnStatus OrbbecOniMapStream::SetMirror(OniBool* pEnabled)
 {
 	XnStatus nRetVal = m_pSensor->SetProperty(m_strType, XN_MODULE_PROPERTY_MIRROR, (XnUInt64)*pEnabled);
 	XN_IS_STATUS_OK(nRetVal);
@@ -352,12 +352,12 @@ XnStatus XnOniMapStream::SetMirror(OniBool* pEnabled)
 	return (XN_STATUS_OK);
 }
 
-XnStatus XnOniMapStream::GetCropping(OniCropping &cropping)
+XnStatus OrbbecOniMapStream::GetCropping(OniCropping &cropping)
 {
 	return m_pSensor->GetProperty(m_strType, XN_STREAM_PROPERTY_CROPPING, XN_PACK_GENERAL_BUFFER(cropping));
 }
 
-XnStatus XnOniMapStream::SetCropping(const OniCropping &cropping)
+XnStatus OrbbecOniMapStream::SetCropping(const OniCropping &cropping)
 {
 	OniGeneralBuffer gbValue = XnGeneralBufferPack((void*)&cropping, sizeof(cropping));
 	return m_pSensor->SetProperty(m_strType, XN_STREAM_PROPERTY_CROPPING, gbValue);

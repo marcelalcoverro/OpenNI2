@@ -18,71 +18,60 @@
 *  limitations under the License.					     *
 *									     *
 *****************************************************************************/
-#ifndef XNONIDEVICE_H
-#define XNONIDEVICE_H
+#ifndef ORBBECONISTREAM_H
+#define ORBBECONISTREAM_H
 
 //---------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------
 #include <Driver/OniDriverAPI.h>
 #include <XnLib.h>
-#include "XnOniDepthStream.h"
-#include "XnOniColorStream.h"
-#include "XnOniIRStream.h"
 #include "../Sensor/XnSensor.h"
 
+//using namespace oni::driver;
 //---------------------------------------------------------------------------
 // Types
 //---------------------------------------------------------------------------
+class XnDeviceStream;
+class OrbbecOniDevice;
 
-class XnOniStream;
-class XnOniDriver;
-
-class XnOniDevice :
-	public oni::driver::DeviceBase
+class OrbbecOniStream :
+	public oni::driver::StreamBase
 {
 public:
-	XnOniDevice(const char* uri, oni::driver::DriverServices& driverServices, XnOniDriver* pDriver);
-	virtual ~XnOniDevice();
+	OrbbecOniStream(XnSensor* pSensor, const XnChar* strName, OniSensorType sensorType, OrbbecOniDevice* pDevice);
+	~OrbbecOniStream();
 
-	XnStatus Init(const char* mode);
+	virtual XnStatus Init();
 
-	OniDeviceInfo* GetInfo() { return &m_info; }
+	virtual void setServices(oni::driver::StreamServices* pStreamServices);
 
-	OniStatus getSensorInfoList(OniSensorInfo** pSensors, int* numSensors);
-
-	oni::driver::StreamBase* createStream(OniSensorType sensorType);
-	void destroyStream(oni::driver::StreamBase* pStream);
+	OniStatus start();
+	void stop();
 
 	virtual OniStatus getProperty(int propertyId, void* data, int* pDataSize);
 	virtual OniStatus setProperty(int propertyId, const void* data, int dataSize);
 	virtual OniBool isPropertySupported(int propertyId);
-	virtual void notifyAllProperties();
 
-	virtual OniStatus EnableFrameSync(XnOniStream** pStreams, int streamCount);
-	virtual void DisableFrameSync();
+	virtual int getRequiredFrameSize();
 
-	virtual OniBool isImageRegistrationModeSupported(OniImageRegistrationMode mode);
+	OrbbecOniDevice* GetDevice() { return m_pDevice; }
+	XnDeviceStream* GetDeviceStream() { return m_pDeviceStream; }
 
-	XnSensor* GetSensor()
-	{
-		return &m_sensor;
-	}
+protected:
+	virtual XnStatus SetPropertyImpl(int propertyId, const void* data, int dataSize);
 
-	XnOniDriver* GetDriver()
-	{
-		return m_pDriver;
-	}
+	OniSensorType m_sensorType;
+	XnSensor* m_pSensor;
+	const XnChar* m_strType;
+	XnDeviceStream* m_pDeviceStream;
+	OrbbecOniDevice* m_pDevice;
+	XnCallbackHandle m_hNewDataCallback;
 
 private:
-	XnStatus FillSupportedVideoModes();
-
-	OniDeviceInfo m_info;
-	int m_numSensors;
-	OniSensorInfo m_sensors[10];
-	oni::driver::DriverServices& m_driverServices;
-	XnSensor m_sensor;
-	XnOniDriver* m_pDriver;
+	void destroy();
+	XnBool m_started;
+	static void XN_CALLBACK_TYPE OnNewStreamDataEventHandler(const XnNewStreamDataEventArgs& args, void* pCookie);
 };
 
-#endif // XNONIDEVICE_H
+#endif // OrbbecONISTREAM_H
