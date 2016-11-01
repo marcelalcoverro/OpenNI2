@@ -60,7 +60,7 @@ ONI_C_API const char* oniGetExtendedError();
 /******************************************** Device APIs */
 
 /** Open a device. Uri can be taken from the matching OniDeviceInfo. */
-ONI_C_API OniStatus oniDeviceOpen(const char* uri, OniDeviceHandle* pDevice);
+ONI_C_API OniStatus oniDeviceOpen(const char* uri, OniDeviceHandle* pDevice, int fd);
 /** Close a device */
 ONI_C_API OniStatus oniDeviceClose(OniDeviceHandle device);
 
@@ -91,7 +91,7 @@ ONI_C_API OniBool oniDeviceIsCommandSupported(OniDeviceHandle device, int comman
 ONI_C_API OniBool oniDeviceIsImageRegistrationModeSupported(OniDeviceHandle device, OniImageRegistrationMode mode);
 
 /** @internal */
-ONI_C_API OniStatus oniDeviceOpenEx(const char* uri, const char* mode, OniDeviceHandle* pDevice);
+ONI_C_API OniStatus oniDeviceOpenEx(const char* uri, const char* mode, OniDeviceHandle* pDevice, int fd);
 
 /******************************************** Stream APIs */
 

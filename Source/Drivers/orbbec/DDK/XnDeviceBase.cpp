@@ -53,7 +53,7 @@ XnDeviceBase::~XnDeviceBase()
 {
 }
 
-XnStatus XnDeviceBase::Init(const XnDeviceConfig* pDeviceConfig)
+XnStatus XnDeviceBase::Init(const XnDeviceConfig* pDeviceConfig, int fd)
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 
@@ -61,7 +61,7 @@ XnStatus XnDeviceBase::Init(const XnDeviceConfig* pDeviceConfig)
 	XN_IS_STATUS_OK(nRetVal);
 
 	// first init the device
-	nRetVal = InitImpl(pDeviceConfig);
+	nRetVal = InitImpl(pDeviceConfig, fd);
 	XN_IS_STATUS_OK(nRetVal);
 
 	// and now create streams
@@ -74,7 +74,7 @@ XnStatus XnDeviceBase::Init(const XnDeviceConfig* pDeviceConfig)
 	return (XN_STATUS_OK);
 }
 
-XnStatus XnDeviceBase::InitImpl(const XnDeviceConfig* pDeviceConfig)
+XnStatus XnDeviceBase::InitImpl(const XnDeviceConfig* pDeviceConfig, int fd)
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 

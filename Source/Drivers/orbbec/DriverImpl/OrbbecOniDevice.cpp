@@ -208,7 +208,7 @@ XnStatus OrbbecOniDevice::FillSupportedVideoModes()
 	return XN_STATUS_OK;
 }
 
-XnStatus OrbbecOniDevice::Init(const char* mode)
+XnStatus OrbbecOniDevice::Init(const char* mode, int fd)
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 
@@ -238,7 +238,7 @@ XnStatus OrbbecOniDevice::Init(const char* mode)
 	XnDeviceConfig config;
 	config.cpConnectionString = m_info.uri;
 	config.pInitialValues = &initialValues;
-	XnStatus retVal = m_sensor.Init(&config);
+	XnStatus retVal = m_sensor.Init(&config, fd);
 	XN_IS_STATUS_OK(retVal);
 
 	nRetVal = FillSupportedVideoModes();

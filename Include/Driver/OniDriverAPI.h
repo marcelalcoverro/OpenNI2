@@ -177,7 +177,7 @@ public:
 		return ONI_STATUS_OK;
 	}
 
-	virtual DeviceBase* deviceOpen(const char* uri, const char* mode) = 0;
+	virtual DeviceBase* deviceOpen(const char* uri, const char* mode, int fd) = 0;
 	virtual void deviceClose(DeviceBase* pDevice) = 0;
 
 	virtual void shutdown() = 0;
@@ -232,9 +232,9 @@ ONI_C_API_EXPORT OniStatus SHORT_DRIVER_NAME##oniDriverTryDevice(const char* uri
 }																															\
 																															\
 /* As Device */																												\
-ONI_C_API_EXPORT oni::driver::DeviceBase* SHORT_DRIVER_NAME##oniDriverDeviceOpen(const char* uri, const char* mode)							\
+ONI_C_API_EXPORT oni::driver::DeviceBase* SHORT_DRIVER_NAME##oniDriverDeviceOpen(const char* uri, const char* mode, int fd)							\
 {																															\
-	return SHORT_DRIVER_NAME##g_pDriver->deviceOpen(uri, mode);																				\
+	return SHORT_DRIVER_NAME##g_pDriver->deviceOpen(uri, mode, fd);																				\
 }																															\
 ONI_C_API_EXPORT void SHORT_DRIVER_NAME##oniDriverDeviceClose(oni::driver::DeviceBase* pDevice)												\
 {																															\

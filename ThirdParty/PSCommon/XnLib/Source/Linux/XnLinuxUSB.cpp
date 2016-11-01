@@ -669,7 +669,7 @@ XN_C_API void xnUSBFreeDevicesList(const XnUSBConnectionString* astrDevicePaths)
 	xnOSFree(astrDevicePaths);
 }
 
-XN_C_API XnStatus xnUSBOpenDeviceImpl(libusb_device* pDevice, XN_USB_DEV_HANDLE* pDevHandlePtr)
+XN_C_API XnStatus xnUSBOpenDeviceImpl(libusb_device* pDevice, XN_USB_DEV_HANDLE* pDevHandlePtr, int fd)
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceImpl checkdevice %s ", xnGetStatusString(nRetVal) );
@@ -682,7 +682,7 @@ XN_C_API XnStatus xnUSBOpenDeviceImpl(libusb_device* pDevice, XN_USB_DEV_HANDLE*
 	libusb_device_handle* handle;
 
 	// open device
-	int rc = libusb_open(pDevice, &handle);
+	int rc = libusb_open(pDevice, &handle, fd);
 
 	// in any case, unref the device (we don't need it anymore)
 	libusb_unref_device(pDevice);
@@ -752,6 +752,10 @@ XN_C_API XnStatus xnUSBOpenDevice(XnUInt16 nVendorID, XnUInt16 nProductID, void*
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 
+	//using extraParam2 to store fd from java
+	int fd = 0;
+	if(pExtraParam2 != NULL) fd = *(int *) (pExtraParam2) ;
+
 	// make sure library was initialized
 	XN_VALIDATE_USB_INIT();
 
@@ -762,13 +766,13 @@ XN_C_API XnStatus xnUSBOpenDevice(XnUInt16 nVendorID, XnUInt16 nProductID, void*
 	nRetVal = FindDevice(nVendorID, nProductID, pExtraParam, &pDevice);
 	XN_IS_STATUS_OK(nRetVal);
 
-	nRetVal = xnUSBOpenDeviceImpl(pDevice, pDevHandlePtr);
+	nRetVal = xnUSBOpenDeviceImpl(pDevice, pDevHandlePtr, fd);
 	XN_IS_STATUS_OK(nRetVal);
 
 	return (XN_STATUS_OK);
 }
 
-XN_C_API XnStatus xnUSBOpenDeviceByPath(const XnUSBConnectionString strDevicePath, XN_USB_DEV_HANDLE* pDevHandlePtr)
+XN_C_API XnStatus xnUSBOpenDeviceByPath(const XnUSBConnectionString strDevicePath, XN_USB_DEV_HANDLE* pDevHandlePtr, int fd)
 {
 
 	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceByPath start");
@@ -830,7 +834,7 @@ XN_C_API XnStatus xnUSBOpenDeviceByPath(const XnUSBConnectionString strDevicePat
 
 	libusb_free_device_list(ppDevices, 1);
 
-	nRetVal = xnUSBOpenDeviceImpl(pRequestedDevice, pDevHandlePtr);
+	nRetVal = xnUSBOpenDeviceImpl(pRequestedDevice, pDevHandlePtr, fd);
 
 	xnLogVerbose(XN_LOG_MASK_ALL, "xnUSBOpenDeviceByPath finish %s ", xnGetStatusString(nRetVal) );
 

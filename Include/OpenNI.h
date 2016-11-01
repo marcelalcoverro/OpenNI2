@@ -1301,7 +1301,7 @@ public:
 
 	@remark For opening a recording file, pass the file path as a uri.
 	*/
-	inline Status open(const char* uri);
+	inline Status open(const char* uri, int fd);
 
 	/**
 	Closes the device.  This properly closes any files or shuts down hardware, as appropriate.  This
@@ -1619,7 +1619,7 @@ public:
 	}
 
 	/** @internal **/
-	inline Status _openEx(const char* uri, const char* mode);
+	inline Status _openEx(const char* uri, const char* mode, int fd);
 
 private:
 	Device(const Device&);
@@ -2655,7 +2655,7 @@ void VideoStream::destroy()
 	}
 }
 
-Status Device::open(const char* uri)
+Status Device::open(const char* uri, int fd)
 {
 	//If we are not the owners, we stick with our own device
 	if(!m_isOwner)
@@ -2668,7 +2668,7 @@ Status Device::open(const char* uri)
 	}
 
 	OniDeviceHandle deviceHandle;
-	Status rc = (Status)oniDeviceOpen(uri, &deviceHandle);
+	Status rc = (Status)oniDeviceOpen(uri, &deviceHandle, fd);
 	if (rc != STATUS_OK)
 	{
 		return rc;
@@ -2679,7 +2679,7 @@ Status Device::open(const char* uri)
 	return STATUS_OK;
 }
 
-Status Device::_openEx(const char* uri, const char* mode)
+Status Device::_openEx(const char* uri, const char* mode, int fd)
 {
 	//If we are not the owners, we stick with our own device
 	if(!m_isOwner)
@@ -2692,7 +2692,7 @@ Status Device::_openEx(const char* uri, const char* mode)
 	}
 
 	OniDeviceHandle deviceHandle;
-	Status rc = (Status)oniDeviceOpenEx(uri, mode, &deviceHandle);
+	Status rc = (Status)oniDeviceOpenEx(uri, mode, &deviceHandle, fd);
 	if (rc != STATUS_OK)
 	{
 		return rc;

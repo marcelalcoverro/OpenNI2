@@ -191,7 +191,7 @@ XnSensor::~XnSensor()
 	XnSensor::Destroy();
 }
 
-XnStatus XnSensor::InitImpl(const XnDeviceConfig *pDeviceConfig)
+XnStatus XnSensor::InitImpl(const XnDeviceConfig *pDeviceConfig, int fd)
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 
@@ -221,11 +221,11 @@ XnStatus XnSensor::InitImpl(const XnDeviceConfig *pDeviceConfig)
 	m_FrameSyncDump = xnDumpFileOpen(XN_DUMP_FRAME_SYNC, "FrameSync.csv");
 	xnDumpFileWriteString(m_FrameSyncDump, "HostTime(us),DepthNewData,DepthTimestamp(ms),ImageNewData,ImageTimestamp(ms),Diff(ms),Action\n");
 
-	nRetVal = XnDeviceBase::InitImpl(pDeviceConfig);
+	nRetVal = XnDeviceBase::InitImpl(pDeviceConfig, fd);
 	XN_IS_STATUS_OK(nRetVal);
 
 	// now that everything is configured, open the sensor
-	nRetVal = InitSensor(pDeviceConfig);
+	nRetVal = InitSensor(pDeviceConfig, fd);
 	if (nRetVal != XN_STATUS_OK)
 	{
 		Destroy();
@@ -240,7 +240,7 @@ XnStatus XnSensor::InitImpl(const XnDeviceConfig *pDeviceConfig)
 	return (XN_STATUS_OK);
 }
 
-XnStatus XnSensor::InitSensor(const XnDeviceConfig* pDeviceConfig)
+XnStatus XnSensor::InitSensor(const XnDeviceConfig* pDeviceConfig, int fd)
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 	XnDevicePrivateData* pDevicePrivateData = GetDevicePrivateData();
@@ -248,7 +248,7 @@ XnStatus XnSensor::InitSensor(const XnDeviceConfig* pDeviceConfig)
 	pDevicePrivateData->pSensor = this;
 
 	// open IO
-	nRetVal = m_SensorIO.OpenDevice(pDeviceConfig->cpConnectionString);
+	nRetVal = m_SensorIO.OpenDevice(pDeviceConfig->cpConnectionString, fd);
 	XN_IS_STATUS_OK(nRetVal);
 
 	// initialize

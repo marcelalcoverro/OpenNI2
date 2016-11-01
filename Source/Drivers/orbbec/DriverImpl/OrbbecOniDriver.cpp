@@ -109,7 +109,7 @@ void OrbbecOniDriver::shutdown()
 	XnDeviceEnumeration::Shutdown();
 }
 
-oni::driver::DeviceBase* OrbbecOniDriver::deviceOpen(const char* uri, const char* mode)
+oni::driver::DeviceBase* OrbbecOniDriver::deviceOpen(const char* uri, const char* mode, int fd)
 {
 	OrbbecOniDevice* pDevice = NULL;
 
@@ -121,7 +121,7 @@ oni::driver::DeviceBase* OrbbecOniDriver::deviceOpen(const char* uri, const char
 	}
 
 	pDevice = XN_NEW(OrbbecOniDevice, uri, getServices(), this);
-	XnStatus nRetVal = pDevice->Init(mode);
+	XnStatus nRetVal = pDevice->Init(mode, fd);
 	if (nRetVal != XN_STATUS_OK)
 	{
 		getServices().errorLoggerAppend("Could not open \"%s\": %s", uri, xnGetStatusString(nRetVal));

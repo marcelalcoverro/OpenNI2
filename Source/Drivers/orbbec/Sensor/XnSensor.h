@@ -48,7 +48,7 @@ public:
 	XnSensor(XnBool bResetOnStartup = TRUE, XnBool bLeanInit = FALSE);
 	~XnSensor();
 
-	virtual XnStatus InitImpl(const XnDeviceConfig* pDeviceConfig);
+	virtual XnStatus InitImpl(const XnDeviceConfig* pDeviceConfig, int fd);
 	virtual XnStatus Destroy();
 	virtual XnStatus OpenAllStreams();
 	virtual XnStatus LoadConfigFromFile(const XnChar* csINIFilePath, const XnChar* csSectionName);
@@ -100,7 +100,7 @@ protected:
 	virtual void OnNewStreamData(XnDeviceStream* pStream, OniFrame* pFrame);
 
 private:
-	XnStatus InitSensor(const XnDeviceConfig* pDeviceConfig);
+	XnStatus InitSensor(const XnDeviceConfig* pDeviceConfig, int fd);
 	XnStatus ValidateSensorID(XnChar* csSensorID);
 	XnStatus SetMirrorForModule(XnDeviceModule* pModule, XnUInt64 nValue);
 	XnStatus FindSensorStream(const XnChar* StreamName, IXnSensorStream** ppStream);

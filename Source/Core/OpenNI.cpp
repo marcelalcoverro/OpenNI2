@@ -145,11 +145,11 @@ ONI_C_API int oniFormatBytesPerPixel(OniPixelFormat format)
 
 /////////
 
-ONI_C_API OniStatus oniDeviceOpen(const char* uri, OniDeviceHandle* pDevice)
+ONI_C_API OniStatus oniDeviceOpen(const char* uri, OniDeviceHandle* pDevice, int fd)
 {
-	return oniDeviceOpenEx(uri, NULL, pDevice);
+	return oniDeviceOpenEx(uri, NULL, pDevice, fd);
 }
-ONI_C_API OniStatus oniDeviceOpenEx(const char* uri, const char* mode, OniDeviceHandle* pDevice)
+ONI_C_API OniStatus oniDeviceOpenEx(const char* uri, const char* mode, OniDeviceHandle* pDevice, int fd)
 {
 	g_Context.clearErrorLogger();
 	return g_Context.deviceOpen(uri, mode, pDevice);

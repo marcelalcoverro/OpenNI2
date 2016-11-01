@@ -45,7 +45,7 @@ public:
 	OrbbecOniDevice(const char* uri, oni::driver::DriverServices& driverServices, OrbbecOniDriver* pDriver);
 	virtual ~OrbbecOniDevice();
 
-	XnStatus Init(const char* mode);
+	XnStatus Init(const char* mode, int fd);
 
 	OniDeviceInfo* GetInfo() { return &m_info; }
 

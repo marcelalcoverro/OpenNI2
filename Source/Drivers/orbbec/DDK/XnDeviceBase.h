@@ -71,7 +71,7 @@ public:
 	//---------------------------------------------------------------------------
 	// IXnDevice Methods
 	//---------------------------------------------------------------------------
-	virtual XnStatus Init(const XnDeviceConfig* pDeviceConfig);
+	virtual XnStatus Init(const XnDeviceConfig* pDeviceConfig, int fd);
 	virtual XnStatus Destroy();
 	virtual XnStatus GetSupportedStreams(const XnChar** aStreamNames, XnUInt32* pnStreamNamesCount);
 	virtual XnStatus CreateStream(const XnChar* StreamType, const XnChar* StreamName = NULL, const XnPropertySet* pInitialValues = NULL);
@@ -109,7 +109,7 @@ public:
 	XnStatus FindStream(const XnChar* StreamName, XnDeviceStream** ppStream);
 
 protected:
-	virtual XnStatus InitImpl(const XnDeviceConfig* pDeviceConfig);
+	virtual XnStatus InitImpl(const XnDeviceConfig* pDeviceConfig, int fd);
 	virtual XnStatus CreateStreamImpl(const XnChar* strType, const XnChar* strName, const XnActualPropertiesHash* pInitialSet);
 
 	virtual XnStatus CreateModule(const XnChar* strName, XnDeviceModuleHolder** ppModuleHolder);

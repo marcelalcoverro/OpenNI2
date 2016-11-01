@@ -40,7 +40,7 @@ XnSensorIO::~XnSensorIO()
 {
 }
 
-XnStatus XnSensorIO::OpenDevice(const XnChar* strPath)
+XnStatus XnSensorIO::OpenDevice(const XnChar* strPath, int fd)
 {
 	XnStatus nRetVal;
 
@@ -48,7 +48,7 @@ XnStatus XnSensorIO::OpenDevice(const XnChar* strPath)
 
 	// try to open the device
 	xnLogVerbose(XN_MASK_DEVICE_IO, "Trying to open sensor '%s'...", strPath);
-	nRetVal = xnUSBOpenDeviceByPath(strPath, &m_pSensorHandle->USBDevice);
+	nRetVal = xnUSBOpenDeviceByPath(strPath, &m_pSensorHandle->USBDevice, fd);
 	XN_IS_STATUS_OK(nRetVal);
 
 	// on older firmwares, control was sent over BULK endpoints. Check if this is the case

@@ -65,7 +65,8 @@ int main()
 	}
 
 	Device device;
-	rc = device.open(ANY_DEVICE);
+	int fd = 0;
+	rc = device.open(ANY_DEVICE, fd);
 	if (rc != STATUS_OK)
 	{
 		printf("Couldn't open device\n%s\n", OpenNI::getExtendedError());
