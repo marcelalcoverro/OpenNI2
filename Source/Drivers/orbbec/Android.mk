@@ -33,6 +33,7 @@ ifdef OPENNI2_ANDROID_NDK_BUILD
 endif	
 
 
+
 MY_SRC_FILE_EXPANDED := $(wildcard $(MY_SRC_FILES))
 LOCAL_SRC_FILES := $(MY_SRC_FILE_EXPANDED:$(LOCAL_PATH)/%=%)
 
@@ -44,6 +45,7 @@ LOCAL_CPP_FEATURES := rtti
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/. \
     $(LOCAL_PATH)/Include \
+    $(LOCAL_PATH)/DriverImpl \
     $(LOCAL_PATH)/../../DepthUtils \
     $(LOCAL_PATH)/../../../Include \
 	$(LOCAL_PATH)/../../../ThirdParty/PSCommon/XnLib/Include
@@ -60,11 +62,11 @@ LOCAL_STATIC_LIBRARIES := XnLib DepthUtils
 LOCAL_SHARED_LIBRARIES := libusb
 
 
-ifdef OPENNI2_ANDROID_OS_BUILD
+#ifdef OPENNI2_ANDROID_OS_BUILD
     LOCAL_SHARED_LIBRARIES += libjpeg
-else
-	LOCAL_LDLIBS += -llog
-endif
+#else
+#	LOCAL_LDLIBS += -llog
+#endif
 
 
 #ifdef PS_OS_BUILD

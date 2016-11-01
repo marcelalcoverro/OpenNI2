@@ -37,7 +37,8 @@ LOCAL_CFLAGS += $(OPENNI2_CFLAGS) -DOPENNI2_EXPORT
 LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/../../Include \
 	$(LOCAL_PATH)/../../ThirdParty/PSCommon/XnLib/Include \
-	$(LOCAL_PATH)/../Drivers/OniFile/Formats
+	$(LOCAL_PATH)/../Drivers/OniFile/Formats \
+	$(LOCAL_PATH)/../Drivers/orbbec/DriverImpl
 
 ifdef OPENNI2_ANDROID_NDK_BUILD
     LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../ThirdParty/LibJPEG
@@ -54,12 +55,13 @@ LOCAL_LDFLAGS := -Wl,--export-dynamic
 LOCAL_STATIC_LIBRARIES := orbbec
 LOCAL_SHARED_LIBRARIES := liblog libdl libusb
 
-ifdef OPENNI2_ANDROID_OS_BUILD
+#ifdef OPENNI2_ANDROID_OS_BUILD
     LOCAL_SHARED_LIBRARIES += libjpeg
     LOCAL_REQUIRED_MODULES = liborbbec
-else
-	LOCAL_LDLIBS += -llog
-endif
+    LOCAL_LDLIBS += -llog
+#else
+#	LOCAL_LDLIBS += -llog
+#endif
 
 # Output
 LOCAL_MODULE := libOpenNI2

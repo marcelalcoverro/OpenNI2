@@ -28,5 +28,6 @@
 //---------------------------------------------------------------------------
 ONI_EXPORT_DRIVER(OrbbecOniDriver , OrbbecOniDriver);
 
+
 // The following line is needed to be once in *ALL* of the high level shared library modules. DO NOT REMOVE!!!
 XN_API_EXPORT_INIT()

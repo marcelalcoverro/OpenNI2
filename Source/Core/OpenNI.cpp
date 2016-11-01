@@ -152,7 +152,7 @@ ONI_C_API OniStatus oniDeviceOpen(const char* uri, OniDeviceHandle* pDevice, int
 ONI_C_API OniStatus oniDeviceOpenEx(const char* uri, const char* mode, OniDeviceHandle* pDevice, int fd)
 {
 	g_Context.clearErrorLogger();
-	return g_Context.deviceOpen(uri, mode, pDevice);
+	return g_Context.deviceOpen(uri, mode, pDevice, fd);
 }
 ONI_C_API OniStatus oniDeviceClose(OniDeviceHandle device)
 {

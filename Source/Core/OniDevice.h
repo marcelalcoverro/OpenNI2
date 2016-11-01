@@ -40,7 +40,7 @@ public:
 	Device(DeviceDriver* pDeviceDriver, const DriverHandler& libraryHandler, FrameManager& frameManager, const OniDeviceInfo* pDeviceInfo, xnl::ErrorLogger& errorLogger);
 	~Device();
 
-	OniStatus open(const char* mode);
+	OniStatus open(const char* mode, int fd);
 	OniStatus close();
 
 	OniStatus getSensorInfoList(OniSensorInfo** pSensors, int& numSensors);

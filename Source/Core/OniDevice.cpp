@@ -56,11 +56,11 @@ Device::~Device()
 	m_pInfo = NULL;
 }
 
-OniStatus Device::open(const char* mode)
+OniStatus Device::open(const char* mode, int fd)
 {
 	if (m_openCount == 0)
 	{
-		m_deviceHandle = m_driverHandler.deviceOpen(m_pInfo->uri, mode);
+		m_deviceHandle = m_driverHandler.deviceOpen(m_pInfo->uri, mode, fd);
 		if (m_deviceHandle == NULL)
 		{
 			return ONI_STATUS_ERROR;

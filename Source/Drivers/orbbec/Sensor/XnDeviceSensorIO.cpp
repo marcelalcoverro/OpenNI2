@@ -44,7 +44,7 @@ XnStatus XnSensorIO::OpenDevice(const XnChar* strPath, int fd)
 {
 	XnStatus nRetVal;
 
-	xnLogVerbose(XN_MASK_DEVICE_IO, "Connecting to USB device...");
+	xnLogVerbose(XN_MASK_DEVICE_IO, "Orbbec XnSensorIO::OpenDevice Connecting to USB device fd = %d", fd);
 
 	// try to open the device
 	xnLogVerbose(XN_MASK_DEVICE_IO, "Trying to open sensor '%s'...", strPath);

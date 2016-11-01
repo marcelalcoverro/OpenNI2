@@ -236,7 +236,7 @@ void (ONI_C_DECL OrbbecOniDriveroniDriverRun)();
 OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverTryDevice)(const char* uri);
 
 // As Device
-void* (ONI_C_DECL OrbbecOniDriveroniDriverDeviceOpen)(const char* uri, const char* mode);
+void* (ONI_C_DECL OrbbecOniDriveroniDriverDeviceOpen)(const char* uri, const char* mode, int fd);
 void (ONI_C_DECL OrbbecOniDriveroniDriverDeviceClose)(void* deviceHandle);
 
 OniStatus (ONI_C_DECL OrbbecOniDriveroniDriverDeviceGetSensorInfoList)(void* deviceHandle, OniSensorInfo** pSensors, int* numSensors);

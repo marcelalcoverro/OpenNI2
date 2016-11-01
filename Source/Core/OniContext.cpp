@@ -456,7 +456,7 @@ OniStatus Context::releaseDeviceList(OniDeviceInfo* pDevices)
 	return ONI_STATUS_OK;
 }
 
-OniStatus Context::deviceOpen(const char* uri, const char* mode, OniDeviceHandle* pDevice)
+OniStatus Context::deviceOpen(const char* uri, const char* mode, OniDeviceHandle* pDevice, int fd)
 {
 	oni::implementation::Device* pMyDevice = NULL;
 
@@ -533,7 +533,7 @@ OniStatus Context::deviceOpen(const char* uri, const char* mode, OniDeviceHandle
 	pDeviceHandle->pDevice = pMyDevice;
 	xnLogVerbose(XN_MASK_ONI_CONTEXT, " pMyDevice->open(mode)");
 
-	return pMyDevice->open(mode);
+	return pMyDevice->open(mode, fd);
 }
 
 OniStatus Context::deviceClose(OniDeviceHandle device)
