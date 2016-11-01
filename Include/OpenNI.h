@@ -82,6 +82,26 @@ typedef struct
 	uint8_t y2;
 } YUV422DoublePixel;
 
+
+/**
+ Holds the value of two pixels in YUV422 format (Luminance/Chrominance,16-bits/pixel).
+ The first pixel has the values y1, u, v.
+ The second pixel has the values y2, u, v.
+*/
+typedef struct
+{
+	/** Overall luminance value of first pixel. */
+	uint8_t y1;
+	/** First chrominance value for two pixels, stored as blue luminance difference signal. */
+	uint8_t u;
+	/** Overall luminance value of second pixel. */
+	uint8_t y2;
+	/** Second chrominance value for two pixels, stored as red luminance difference signal. */
+	uint8_t v;
+} YUYVDoublePixel;
+
+
+
 /** This special URI can be passed to @ref Device::open() when the application has no concern for a specific device. */
 #if ONI_PLATFORM != ONI_PLATFORM_WIN32
 #pragma GCC diagnostic ignored "-Wunused-variable"

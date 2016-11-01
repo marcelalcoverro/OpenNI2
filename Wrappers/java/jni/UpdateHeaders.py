@@ -35,8 +35,7 @@ type = sys.argv[1]
 
 # list all classes
 java_classes = ['org.openni.NativeMethods']
-android_classes = []
-# ['org.openni.android.OpenNIView']
+android_classes = ['org.openni.android.OpenNIView']
 
 classes = java_classes
 if type == 'android':
